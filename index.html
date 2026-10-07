@@ -426,6 +426,53 @@
       justify-content: center;
     }
 
+    /* NEW EXTRA METRICS */
+    .extra-metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .extra-card {
+      background: #fff;
+      border: 3px solid #808080;
+      border-top-color: #dfdfdf;
+      border-left-color: #dfdfdf;
+      padding: 1rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .extra-card::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: repeating-linear-gradient(90deg, #ff5252 0 10px, #ff9800 10px 20px, #4caf50 20px 30px, #2196f3 30px 40px);
+      animation: rainbow-bar 2s linear infinite;
+    }
+    @keyframes rainbow-bar {
+      0% { background-position: 0 0; }
+      100% { background-position: 40px 0; }
+    }
+    .extra-card .label {
+      font-size: 0.7rem;
+      color: #808080;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
+    .extra-card .value {
+      font-family: 'VT323', monospace;
+      font-size: 2rem;
+      color: #000080;
+      font-weight: 900;
+      margin-top: 0.3rem;
+    }
+    .extra-card .sub {
+      font-size: 0.75rem;
+      color: #8b0000;
+      font-weight: 700;
+    }
+
     @media (max-width: 640px) {
       h1 { font-size: 2.2rem; }
       .window { margin: 0.8rem; }
@@ -501,6 +548,41 @@
         </div>
       </div>
 
+      <!-- NEW EXTRA METRICS -->
+      <h2 style="font-family:'VT323',monospace; font-size:1.4rem; color:#000080; margin-bottom:0.6rem;">🔥 LIVE COOLNESS DATA 🔥</h2>
+      <div class="extra-metrics">
+        <div class="extra-card">
+          <div class="label">AURA LEVEL</div>
+          <div class="value">-∞</div>
+          <div class="sub">Negative infinity</div>
+        </div>
+        <div class="extra-card">
+          <div class="label">VIBE CHECK</div>
+          <div class="value">FAIL</div>
+          <div class="sub">No vibes detected</div>
+        </div>
+        <div class="extra-card">
+          <div class="label">SWAG METER</div>
+          <div class="value">0.00</div>
+          <div class="sub">Absolute zero</div>
+        </div>
+        <div class="extra-card">
+          <div class="label">RIZZ INDEX</div>
+          <div class="value">-99</div>
+          <div class="sub">Anti-rizz confirmed</div>
+        </div>
+        <div class="extra-card">
+          <div class="label">CHAOS LEVEL</div>
+          <div class="value">MAX</div>
+          <div class="sub">Over 9000</div>
+        </div>
+        <div class="extra-card">
+          <div class="label">MEME POTENTIAL</div>
+          <div class="value">0%</div>
+          <div class="sub">No virality</div>
+        </div>
+      </div>
+
       <!-- Real-time meter -->
       <div class="meter-box">
         <h3>📊 REAL-TIME COOLNESS METER 📊</h3>
@@ -553,50 +635,70 @@
   </div>
 
   <footer>
-    <p>Built with 100% serious technology. No jokes here.</p>
-    <p>Your mom might be cool, but <a href="https://priyanshu.is-not.cool" style="text-decoration: underline; color: #ff5252;">priyanshu.is-not.cool</a>.</p>
-    <p>Visit the mirror site: <a href="#" style="color:#000080;">priyanshu.is-not.cool</a></p>
+    <p>Built with 100% serious technology. Zero jokes. Maximum chaos.</p>
+    <p style="font-family:'VT323',monospace; font-size:1.3rem; color:#000080; letter-spacing:2px; text-shadow:2px 2px 0 #fff;">COOLNESS STATUS: PERMANENTLY BROKEN</p>
     <div class="counter">VISITORS: <span id="visitor-count">LOADING...</span></div>
+    <p style="font-size:0.75rem; color:#808080; margin-top:0.5rem;">Real-time global counter • No cookies • No tracking • Just chaos</p>
   </footer>
 
   <script>
-    // REAL GLOBAL VISITOR COUNTER — uses reliable public endpoints (no localStorage)
+    // REAL GLOBAL VISITOR COUNTER — uses public APIs (no localStorage, every visit counts globally)
     (function() {
       const el = document.getElementById('visitor-count');
-      fetch('https://counterapi.dev/api/yourmom.cool/visits')
-        .then(r => r.json())
-        .then(data => {
-          if (el && data && data.count !== undefined) {
-            el.textContent = String(data.count).padStart(6, '0');
-          } else if (el) el.textContent = '000042';
-        })
-        .catch(() => {
-          fetch('https://api.countapi.xyz/get/yourmom.cool/visits')
-            .then(r => r.json())
-            .then(data => {
-              if (el && data && data.value !== undefined) {
-                el.textContent = String(data.value).padStart(6, '0');
-              } else if (el) el.textContent = '000042';
-            })
-            .catch(() => { if (el) el.textContent = '000042'; });
+      // Try multiple free counter APIs for reliability
+      const tryCounters = [
+        () => fetch('https://counterapi.dev/api/yourmom.cool/visits').then(r => r.json()).then(d => d.count),
+        () => fetch('https://api.countapi.xyz/get/yourmom.cool/visits').then(r => r.json()).then(d => d.value),
+        () => fetch('https://api.allorigins.win/raw?url=https://counterapi.dev/api/yourmom.cool/visits').then(r => r.json()).then(d => d.count)
+      ];
+      let idx = 0;
+      function attempt() {
+        tryCounters[idx]().then(count => {
+          if (el && typeof count === 'number') {
+            el.textContent = String(count).padStart(6, '0');
+          } else if (el) {
+            el.textContent = '000042';
+          }
+        }).catch(() => {
+          idx++;
+          if (idx < tryCounters.length) attempt();
+          else if (el) el.textContent = '000042';
         });
+      }
+      attempt();
     })();
 
-    // Funny quote from a free API
+    // Funny quote from a REAL FREE API (icanhazdadjoke / official-joke-api)
     (function() {
-      const quotes = [
-        "Your mom's coolness is like a black hole — it sucks everything in and nothing escapes.",
-        "Coolness is a social construct. Your mom is a social disaster.",
-        "If coolness were a currency, your mom would be in debt to the universe.",
-        "Scientists say coolness is 90% confidence. Your mom is 100% confusion.",
-        "Your mom's vibe is so broken, even WiFi refuses to connect.",
-        "Cool people have aura. Your mom has an odor.",
-        "The only thing cooler than your mom is absolute zero."
-      ];
       const el = document.getElementById('funny-quote');
-      if (el) {
-        el.textContent = '"' + quotes[Math.floor(Math.random() * quotes.length)] + '"';
-      }
+      // Try official joke API first
+      fetch('https://official-joke-api.appspot.com/random_joke')
+        .then(r => r.json())
+        .then(j => {
+          if (el && j.setup && j.punchline) {
+            el.innerHTML = '<strong>JOKE API:</strong> ' + j.setup + ' <br><span style="color:#ffeb3b; font-weight:900;">' + j.punchline + '</span>';
+          }
+        })
+        .catch(() => {
+          // Fallback to dad jokes
+          fetch('https://icanhazdadjoke.com/', { headers: { Accept: 'application/json' } })
+            .then(r => r.json())
+            .then(j => {
+              if (el && j.joke) el.innerHTML = '<strong>DAD JOKE API:</strong> ' + j.joke;
+            })
+            .catch(() => {
+              const quotes = [
+                "Your mom's coolness is like a black hole — it sucks everything in and nothing escapes.",
+                "Coolness is a social construct. Your mom is a social disaster.",
+                "If coolness were a currency, your mom would be in debt to the universe.",
+                "Scientists say coolness is 90% confidence. Your mom is 100% confusion.",
+                "Your mom's vibe is so broken, even WiFi refuses to connect.",
+                "Cool people have aura. Your mom has an odor.",
+                "The only thing cooler than your mom is absolute zero."
+              ];
+              if (el) el.textContent = '"' + quotes[Math.floor(Math.random() * quotes.length)] + '"';
+            });
+        });
     })();
 
     // Generate new insult (funny API-style interaction)
