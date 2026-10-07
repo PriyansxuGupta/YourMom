@@ -356,6 +356,10 @@
             <tr><td>Vibes</td><td class="value-bad">BROKEN</td><td>Beyond repair</td></tr>
             <tr><td>Swagger</td><td class="value-bad">NONE</td><td>Not found</td></tr>
             <tr><td>Photogenic</td><td class="value-bad">NO</td><td>Cameras refuse</td></tr>
+            <tr><td>Rizz</td><td class="value-bad">-99</td><td>Negative rizz detected</td></tr>
+            <tr><td>Drip / Fit</td><td class="value-bad">0/10</td><td>Wears socks with sandals</td></tr>
+            <tr><td>Social Battery</td><td class="value-bad">DEAD</td><td>Does not charge</td></tr>
+            <tr><td>Coolness Index</td><td class="value-bad">0.00%</td><td>Certified uncool</td></tr>
           </tbody>
         </table>
       </div>
@@ -392,6 +396,16 @@
         <p><strong>Fatal:</strong> Your mom is so literal, when told to "go with the flow" she jumped into a river.</p>
       </div>
 
+      <div class="dialog-box">
+        <div class="dialog-icon">📉</div>
+        <p><strong>Analytics:</strong> Your mom's coolness graph is a flatline. Even the X-axis is embarrassed.</p>
+      </div>
+
+      <div class="dialog-box">
+        <div class="dialog-icon">🎤</div>
+        <p><strong>Mic Drop:</strong> Your mom's jokes are so bad, the microphone walked off stage.</p>
+      </div>
+
       <a href="#" class="btn-retro" onclick="event.preventDefault(); alert('New insult generated: Your mom is so unfunny, her jokes need laugh tracks in real life.');">🎲 GENERATE NEW INSULT 🎲</a>
     </div>
   </div>
@@ -400,7 +414,18 @@
     <p>Built with 100% serious technology. No jokes here.</p>
     <p>Your mom might be cool, but <a href="https://priyanshu.is-not.cool" style="text-decoration: underline; color: #ff5252;">priyanshu.is-not.cool</a>.</p>
     <p>Visit the mirror site: <a href="#" style="color:#000080;">priyanshu.is-not.cool</a></p>
-    <div class="counter">VISITORS: 000042</div>
+    <div class="counter">VISITORS: <span id="visitor-count">000042</span></div>
+    <script>
+      (function() {
+        const key = 'ym_visitor_count';
+        let count = parseInt(localStorage.getItem(key), 10);
+        if (!count || isNaN(count)) count = 42;
+        count += 1;
+        localStorage.setItem(key, count);
+        const el = document.getElementById('visitor-count');
+        if (el) el.textContent = String(count).padStart(6, '0');
+      })();
+    </script>
   </footer>
 </body>
 </html>
