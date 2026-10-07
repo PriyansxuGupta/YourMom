@@ -1,182 +1,406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Mom Is NOT Cool</title>
-    <style>
-        body {
-            font-family: 'Trebuchet MS', sans-serif;
-            background-color: #121212;
-            color: #eaeaea;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-        
-        header {
-            background-color: #ff5252;
-            color: white;
-            text-align: center;
-            padding: 2rem 0;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-        
-        h1 {
-            font-size: 3rem;
-            margin: 0;
-            text-shadow: 3px 3px 0 #990000;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            margin-top: 0.5rem;
-        }
-        
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 2rem;
-            flex: 1;
-        }
-        
-        .jokes-container {
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        
-        .joke {
-            background-color: #2a2a2a;
-            border-left: 4px solid #ff5252;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 0 5px 5px 0;
-            transition: all 0.3s ease;
-        }
-        
-        .joke:hover {
-            transform: translateX(5px);
-            background-color: #333333;
-        }
-        
-        .btn {
-            background-color: #ff5252;
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 30px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin: 0 auto;
-            display: block;
-            font-weight: bold;
-        }
-        
-        .btn:hover {
-            background-color: #ff3232;
-            transform: scale(1.05);
-        }
-        
-        footer {
-            text-align: center;
-            padding: 1rem;
-            background-color: #1e1e1e;
-            font-size: 0.9rem;
-        }
-        
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .container {
-                padding: 1rem;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Is Your Mom Cool? — A Scientific Study</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime:wght@700&display=swap');
+
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Courier Prime', 'Courier New', monospace;
+      background: #c0c0c0;
+      color: #000;
+      margin: 0;
+      padding: 0;
+      line-height: 1.4;
+    }
+
+    /* 90s-style tiled background */
+    .bg-tile {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        repeating-linear-gradient(45deg, #b8b8b8 0 10px, #a8a8a8 10px 20px),
+        repeating-linear-gradient(-45deg, #c8c8c8 0 10px, #b0b0b0 10px 20px);
+      opacity: 0.6;
+    }
+
+    /* Fake Windows 95-style window */
+    .window {
+      max-width: 720px;
+      margin: 2rem auto;
+      background: #c0c0c0;
+      border: 3px solid #fff;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      border-top-color: #dfdfdf;
+      border-left-color: #dfdfdf;
+      box-shadow: 2px 2px 0 #404040;
+      padding: 0;
+    }
+
+    .window-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: #fff;
+      padding: 4px 8px;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid #808080;
+    }
+
+    .window-titlebar .btn-close {
+      background: #c0c0c0;
+      border: 2px solid #fff;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      width: 18px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000;
+    }
+
+    .window-body {
+      padding: 1.5rem;
+    }
+
+    /* Marquee banner like old news tickers */
+    .ticker {
+      background: #000;
+      color: #0f0;
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      padding: 0.4rem 0.8rem;
+      border: 2px inset #808080;
+      margin-bottom: 1rem;
+      white-space: nowrap;
+      overflow: hidden;
+      position: relative;
+    }
+    .ticker span {
+      display: inline-block;
+      animation: ticker 12s linear infinite;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    h1 {
+      font-family: 'VT323', monospace;
+      font-size: 3rem;
+      margin: 0 0 0.5rem;
+      color: #000080;
+      text-shadow: 2px 2px 0 #fff;
+      letter-spacing: -1px;
+    }
+
+    .subtitle {
+      font-family: 'Courier Prime', monospace;
+      font-size: 0.95rem;
+      color: #404040;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Fake "Under Construction" banner */
+    .under-construction {
+      background: repeating-linear-gradient(
+        45deg,
+        #ffff00,
+        #ffff00 10px,
+        #000 10px,
+        #000 20px
+      );
+      color: #000;
+      text-align: center;
+      padding: 0.3rem;
+      font-weight: 900;
+      font-size: 0.85rem;
+      border-top: 2px solid #000;
+      border-bottom: 2px solid #000;
+      margin-bottom: 1.5rem;
+      letter-spacing: 2px;
+    }
+
+    /* Fake profile card — looks like an old ID card */
+    .id-card {
+      background: #fff;
+      border: 3px solid #000;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    .id-card::before {
+      content: "TOP SECRET — EYES ONLY";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+      background: #8b0000;
+      color: #fff;
+      padding: 0.15rem 0.8rem;
+      font-size: 0.7rem;
+      font-weight: 900;
+      border: 2px solid #000;
+      letter-spacing: 1px;
+    }
+
+    .id-card img {
+      width: 100px;
+      height: 100px;
+      border: 3px solid #000;
+      filter: grayscale(100%) contrast(120%);
+      display: block;
+      margin: 0 auto 0.8rem;
+    }
+
+    .id-card h2 {
+      font-family: 'VT323', monospace;
+      font-size: 1.8rem;
+      margin: 0 0 0.3rem;
+      text-align: center;
+      color: #000080;
+    }
+
+    .id-card .status-badge {
+      display: inline-block;
+      background: #8b0000;
+      color: #fff;
+      padding: 0.15rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 900;
+      border: 2px solid #000;
+      margin-top: 0.3rem;
+    }
+
+    /* Stats table like a spreadsheet */
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.8rem;
+      font-size: 0.9rem;
+    }
+    .stats-table th, .stats-table td {
+      border: 1px solid #808080;
+      padding: 0.4rem 0.6rem;
+      text-align: left;
+    }
+    .stats-table th {
+      background: #000080;
+      color: #fff;
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+    }
+    .stats-table td.value-bad {
+      color: #8b0000;
+      font-weight: 900;
+    }
+
+    /* Fake progress bar — always 0% */
+    .meter-box {
+      background: #fff;
+      border: 3px inset #808080;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .meter-box h3 {
+      font-family: 'VT323', monospace;
+      font-size: 1.3rem;
+      margin: 0 0 0.5rem;
+      color: #000;
+    }
+    .meter-track {
+      width: 100%;
+      height: 28px;
+      background: #808080;
+      border: 2px inset #c0c0c0;
+      position: relative;
+    }
+    .meter-fill {
+      width: 0%;
+      height: 100%;
+      background: #808080;
+      position: relative;
+    }
+    .meter-fill::after {
+      content: "0% — SYSTEM FAILURE";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: #000;
+      font-weight: 900;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+    }
+
+    /* Joke cards — like old error dialogs */
+    .dialog-box {
+      background: #fff;
+      border: 3px solid #808080;
+      border-top-color: #dfdfdf;
+      border-left-color: #dfdfdf;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .dialog-box .dialog-icon {
+      float: left;
+      font-size: 2rem;
+      margin-right: 0.8rem;
+      line-height: 1;
+    }
+    .dialog-box p {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    /* Fake button — 90s style */
+    .btn-retro {
+      display: inline-block;
+      background: #c0c0c0;
+      border: 3px solid #fff;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      padding: 0.6rem 1.2rem;
+      font-family: 'Courier Prime', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #000;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 1px 1px 0 #404040;
+    }
+    .btn-retro:active {
+      border-top-color: #808080;
+      border-left-color: #808080;
+      border-right-color: #fff;
+      border-bottom-color: #fff;
+      box-shadow: inset 1px 1px 0 #808080;
+      transform: translate(1px, 1px);
+    }
+
+    /* Footer like old site counters */
+    footer {
+      max-width: 720px;
+      margin: 0 auto 2rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #404040;
+      padding: 1rem;
+      border-top: 2px dashed #808080;
+    }
+    footer .counter {
+      display: inline-block;
+      background: #000;
+      color: #0f0;
+      padding: 0.2rem 0.6rem;
+      font-family: 'VT323', monospace;
+      font-size: 1rem;
+      border: 2px inset #808080;
+      margin-top: 0.5rem;
+    }
+
+    /* Small responsive tweak */
+    @media (max-width: 640px) {
+      h1 { font-size: 2rem; }
+      .window { margin: 1rem; }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>YOUR MOM IS NOT COOL</h1>
-        <div class="subtitle">Or is she just pretending?</div>
-    </header>
-    
-    <div class="container">
-        <div class="jokes-container">
-            <div class="joke" id="joke1">Your mom is so cool, the temperature drops 10 degrees when she enters a room.</div>
-            <div class="joke" id="joke2">Your mom is so bad at technology, she thought Bluetooth was a rare dental condition.</div>
-            <div class="joke" id="joke3">Your mom is so old, her first job was as a babysitter for dinosaurs.</div>
-            <div class="joke" id="joke4">Your mom is so disorganized, she got lost in a one-room apartment.</div>
-            <div class="joke" id="joke5">Your mom is so literal, when someone told her to "go with the flow" she jumped into a river.</div>
-            <div class="joke" id="joke6">Your mom is so unphotogenic, cameras automatically switch to selfie mode to avoid taking her picture.</div>
-            <div class="joke" id="joke7">Your mom is so predictable, even fortune tellers tell her what she did yesterday.</div>
-            <div class="joke" id="joke8">Your mom is so unfunny, her jokes need laugh tracks in real life.</div>
-        </div>
-        
-        <button class="btn" id="new-joke-btn">SHOW ME ANOTHER JOKE</button>
-    </div>
-    
-    <footer>
-    Your mom might be cool, but <a href="https://priyanshu.is-not.cool" style="text-decoration: underline; color: #ff5252; ">priyanshu.is-not.cool</a>.
-    </footer>
-    
-    <script>
-        const jokes = [
-            "Your mom is so cool, the temperature drops 10 degrees when she enters a room.",
-            "Your mom is so bad at technology, she thought Bluetooth was a rare dental condition.",
-            "Your mom is so old, her first job was as a babysitter for dinosaurs.",
-            "Your mom is so disorganized, she got lost in a one-room apartment.",
-            "Your mom is so literal, when someone told her to 'go with the flow' she jumped into a river.",
-            "Your mom is so unphotogenic, cameras automatically switch to selfie mode to avoid taking her picture.",
-            "Your mom is so predictable, even fortune tellers tell her what she did yesterday.",
-            "Your mom is so unfunny, her jokes need laugh tracks in real life.",
-            "Your mom is so out of touch, she thinks TikTok is the sound a clock makes.",
-            "Your mom is so unmotivated, she puts the 'pro' in 'procrastination'.",
-            "Your mom is so clumsy, she tripped on a wireless network.",
-            "Your mom is so unconvincing, she couldn't sell water to someone in a desert.",
-            "Your mom is so directionally challenged, she needs GPS to find her way out of bed.",
-            "Your mom is so unoriginal, she plagiarizes her own thoughts.",
-            "Your mom is so awkward, even social distancing guidelines feel too close for comfort.",
-            "Your mom is so unfashionable, she's the reason thrift stores have donation bins.",
-            "Your mom is so indecisive, she takes 30 minutes to choose a flavor at an ice cream shop with only vanilla and chocolate.",
-            "Your mom is so forgetful, she leaves sticky notes to remind herself to write sticky notes.",
-            "Your mom is so slow, her internet explorer actually caught up and retired before she did.",
-            "Your mom is so uncreative, her imagination needs software updates."
-        ];
+  <div class="bg-tile"></div>
 
-        let currentJokes = jokes.slice(0, 8);
-        let displayedIndexes = [0, 1, 2, 3, 4, 5, 6, 7];
-        
-        document.getElementById('new-joke-btn').addEventListener('click', function() {
-            const jokeElements = document.querySelectorAll('.joke');
-            
-            const availableJokes = jokes.filter((joke, index) => !displayedIndexes.includes(index));
-            
-            if (availableJokes.length >= jokeElements.length) {
-                displayedIndexes = [];
-                for (let i = 0; i < jokeElements.length; i++) {
-                    let randomIndex = Math.floor(Math.random() * availableJokes.length);
-                    let jokeIndex = jokes.indexOf(availableJokes[randomIndex]);
-                    
-                    jokeElements[i].textContent = availableJokes[randomIndex];
-                    displayedIndexes.push(jokeIndex);
-                    
-                    availableJokes.splice(randomIndex, 1);
-                }
-            } else {
-                displayedIndexes = [0, 1, 2, 3, 4, 5, 6, 7];
-                for (let i = 0; i < jokeElements.length; i++) {
-                    jokeElements[i].textContent = jokes[displayedIndexes[i]];
-                }
-            }
-        });
-    </script>
+  <div class="window">
+    <div class="window-titlebar">
+      <span>📁 YOUR_MOM.EXE — [NOT COOL]</span>
+      <span class="btn-close" onclick="alert('You cannot close reality.')">×</span>
+    </div>
+
+    <div class="window-body">
+      <div class="ticker">
+        <span>⚠ BREAKING: SCIENTISTS CONFIRM YOUR MOM IS NOT COOL ⚠ NO REFUNDS ⚠ PLEASE STOP ASKING ⚠</span>
+      </div>
+
+      <div class="under-construction">
+        🚧 THIS SITE IS UNDER CONSTRUCTION FOREVER 🚧
+      </div>
+
+      <h1>Is Your Mom Cool?</h1>
+      <p class="subtitle">A peer-reviewed scientific study by the International Board of Not-Cool Moms (IBNCM). Results are final.</p>
+
+      <!-- Fake ID Card -->
+      <div class="id-card">
+        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=YourMomNotCool" alt="Your Mom" />
+        <h2>YOUR MOM</h2>
+        <p style="text-align:center; font-size:0.85rem; color:#404040;">Status: <span class="status-badge">UNCERTIFIED COOL</span></p>
+        <table class="stats-table">
+          <thead>
+            <tr><th>Metric</th><th>Score</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Cool Points</td><td class="value-bad">0 / 100</td><td>Irrecoverable</td></tr>
+            <tr><td>Vibes</td><td class="value-bad">BROKEN</td><td>Beyond repair</td></tr>
+            <tr><td>Swagger</td><td class="value-bad">NONE</td><td>Not found</td></tr>
+            <tr><td>Photogenic</td><td class="value-bad">NO</td><td>Cameras refuse</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Fake meter -->
+      <div class="meter-box">
+        <h3>📊 REAL-TIME COOLNESS METER 📊</h3>
+        <div class="meter-track">
+          <div class="meter-fill"></div>
+        </div>
+        <p style="font-size:0.85rem; color:#000;">System status: PERMANENTLY BROKEN. Do not attempt repair.</p>
+      </div>
+
+      <!-- Jokes as error dialogs -->
+      <h2 style="font-family:'VT323',monospace; font-size:1.4rem; color:#000080; margin-bottom:0.5rem;">⚠ SYSTEM ALERTS ⚠</h2>
+
+      <div class="dialog-box">
+        <div class="dialog-icon">❌</div>
+        <p><strong>Error 404:</strong> Your mom is so bad at technology, she thought Bluetooth was a rare dental condition.</p>
+      </div>
+
+      <div class="dialog-box">
+        <div class="dialog-icon">⚠️</div>
+        <p><strong>Warning:</strong> Your mom is so old, her first job was as a babysitter for dinosaurs.</p>
+      </div>
+
+      <div class="dialog-box">
+        <div class="dialog-icon">💀</div>
+        <p><strong>Critical:</strong> Your mom is so disorganized, she got lost in a one-room apartment.</p>
+      </div>
+
+      <div class="dialog-box">
+        <div class="dialog-icon">🔴</div>
+        <p><strong>Fatal:</strong> Your mom is so literal, when told to "go with the flow" she jumped into a river.</p>
+      </div>
+
+      <a href="#" class="btn-retro" onclick="event.preventDefault(); alert('New insult generated: Your mom is so unfunny, her jokes need laugh tracks in real life.');">🎲 GENERATE NEW INSULT 🎲</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>Built with 100% serious technology. No jokes here.</p>
+    <p>Your mom might be cool, but <a href="https://priyanshu.is-not.cool" style="text-decoration: underline; color: #ff5252;">priyanshu.is-not.cool</a>.</p>
+    <p>Visit the mirror site: <a href="#" style="color:#000080;">priyanshu.is-not.cool</a></p>
+    <div class="counter">VISITORS: 000042</div>
+  </footer>
 </body>
 </html>
