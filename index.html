@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Is Your Mom Cool? — A Scientific Study</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime:wght@700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime:wght@700&family=Press+Start+2P&display=swap');
 
     * { box-sizing: border-box; }
 
@@ -16,9 +16,10 @@
       margin: 0;
       padding: 0;
       line-height: 1.4;
+      overflow-x: hidden;
     }
 
-    /* 90s-style tiled background */
+    /* 90s tiled background */
     .bg-tile {
       position: fixed;
       inset: 0;
@@ -31,7 +32,7 @@
 
     /* Fake Windows 95-style window */
     .window {
-      max-width: 720px;
+      max-width: 760px;
       margin: 2rem auto;
       background: #c0c0c0;
       border: 3px solid #fff;
@@ -39,16 +40,17 @@
       border-bottom-color: #808080;
       border-top-color: #dfdfdf;
       border-left-color: #dfdfdf;
-      box-shadow: 2px 2px 0 #404040;
+      box-shadow: 4px 4px 0 #404040;
       padding: 0;
+      position: relative;
     }
 
     .window-titlebar {
       background: linear-gradient(90deg, #000080, #1084d0);
       color: #fff;
-      padding: 4px 8px;
+      padding: 5px 10px;
       font-family: 'VT323', monospace;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       letter-spacing: 1px;
       display: flex;
       align-items: center;
@@ -61,22 +63,22 @@
       border: 2px solid #fff;
       border-right-color: #808080;
       border-bottom-color: #808080;
-      width: 18px;
-      height: 18px;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: bold;
       cursor: pointer;
       color: #000;
+      transition: transform 0.1s;
     }
+    .window-titlebar .btn-close:hover { transform: scale(1.15); }
 
-    .window-body {
-      padding: 1.5rem;
-    }
+    .window-body { padding: 1.5rem; }
 
-    /* Marquee banner like old news tickers */
+    /* Marquee banner */
     .ticker {
       background: #000;
       color: #0f0;
@@ -91,20 +93,25 @@
     }
     .ticker span {
       display: inline-block;
-      animation: ticker 12s linear infinite;
+      animation: ticker 10s linear infinite;
     }
     @keyframes ticker {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
+      0% { transform: translateX(110%); }
+      100% { transform: translateX(-110%); }
     }
 
     h1 {
       font-family: 'VT323', monospace;
-      font-size: 3rem;
+      font-size: 3.2rem;
       margin: 0 0 0.5rem;
       color: #000080;
-      text-shadow: 2px 2px 0 #fff;
-      letter-spacing: -1px;
+      text-shadow: 3px 3px 0 #fff;
+      letter-spacing: -2px;
+      animation: wobble 4s ease-in-out infinite;
+    }
+    @keyframes wobble {
+      0%, 100% { transform: rotate(-0.5deg); }
+      50% { transform: rotate(0.5deg); }
     }
 
     .subtitle {
@@ -125,50 +132,66 @@
       );
       color: #000;
       text-align: center;
-      padding: 0.3rem;
+      padding: 0.35rem;
       font-weight: 900;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       border-top: 2px solid #000;
       border-bottom: 2px solid #000;
       margin-bottom: 1.5rem;
       letter-spacing: 2px;
+      animation: blink 1.2s step-end infinite;
+    }
+    @keyframes blink {
+      50% { opacity: 0.7; }
     }
 
-    /* Fake profile card — looks like an old ID card */
+    /* Fake profile card */
     .id-card {
       background: #fff;
       border: 3px solid #000;
       padding: 1rem;
       margin-bottom: 1.5rem;
       position: relative;
+      box-shadow: 6px 6px 0 #808080;
     }
     .id-card::before {
       content: "TOP SECRET — EYES ONLY";
       position: absolute;
-      top: -10px;
+      top: -12px;
       left: 50%;
       transform: translateX(-50%) rotate(-3deg);
       background: #8b0000;
       color: #fff;
-      padding: 0.15rem 0.8rem;
-      font-size: 0.7rem;
+      padding: 0.2rem 1rem;
+      font-size: 0.75rem;
       font-weight: 900;
       border: 2px solid #000;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
+      animation: stamp 0.8s ease-out;
+    }
+    @keyframes stamp {
+      0% { transform: translateX(-50%) rotate(-3deg) scale(2); opacity: 0; }
+      60% { transform: translateX(-50%) rotate(-3deg) scale(0.9); opacity: 1; }
+      100% { transform: translateX(-50%) rotate(-3deg) scale(1); }
     }
 
     .id-card img {
-      width: 100px;
-      height: 100px;
+      width: 110px;
+      height: 110px;
       border: 3px solid #000;
       filter: grayscale(100%) contrast(120%);
       display: block;
       margin: 0 auto 0.8rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
     }
 
     .id-card h2 {
       font-family: 'VT323', monospace;
-      font-size: 1.8rem;
+      font-size: 2rem;
       margin: 0 0 0.3rem;
       text-align: center;
       color: #000080;
@@ -178,14 +201,19 @@
       display: inline-block;
       background: #8b0000;
       color: #fff;
-      padding: 0.15rem 0.6rem;
-      font-size: 0.75rem;
+      padding: 0.2rem 0.7rem;
+      font-size: 0.8rem;
       font-weight: 900;
       border: 2px solid #000;
       margin-top: 0.3rem;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 #8b0000; }
+      50% { box-shadow: 0 0 10px #8b0000; }
     }
 
-    /* Stats table like a spreadsheet */
+    /* Stats table */
     .stats-table {
       width: 100%;
       border-collapse: collapse;
@@ -194,45 +222,64 @@
     }
     .stats-table th, .stats-table td {
       border: 1px solid #808080;
-      padding: 0.4rem 0.6rem;
+      padding: 0.45rem 0.6rem;
       text-align: left;
     }
     .stats-table th {
       background: #000080;
       color: #fff;
       font-family: 'VT323', monospace;
-      font-size: 1rem;
+      font-size: 1.05rem;
     }
     .stats-table td.value-bad {
       color: #8b0000;
       font-weight: 900;
+      animation: shake 2s ease-in-out infinite;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10% { transform: translateX(-2px); }
+      30% { transform: translateX(2px); }
+      50% { transform: translateX(-1px); }
+      70% { transform: translateX(1px); }
+      90% { transform: translateX(-1px); }
     }
 
-    /* Fake progress bar — always 0% */
+    /* Meter */
     .meter-box {
       background: #fff;
       border: 3px inset #808080;
       padding: 1rem;
       margin-bottom: 1.5rem;
+      position: relative;
     }
     .meter-box h3 {
       font-family: 'VT323', monospace;
-      font-size: 1.3rem;
-      margin: 0 0 0.5rem;
+      font-size: 1.4rem;
+      margin: 0 0 0.6rem;
       color: #000;
     }
     .meter-track {
       width: 100%;
-      height: 28px;
+      height: 30px;
       background: #808080;
       border: 2px inset #c0c0c0;
       position: relative;
+      overflow: hidden;
     }
     .meter-fill {
       width: 0%;
       height: 100%;
-      background: #808080;
+      background: repeating-linear-gradient(90deg, #808080 0 8px, #606060 8px 16px);
       position: relative;
+      animation: glitch 0.5s infinite;
+    }
+    @keyframes glitch {
+      0% { filter: hue-rotate(0deg); }
+      25% { filter: hue-rotate(30deg); }
+      50% { filter: hue-rotate(-20deg); }
+      75% { filter: hue-rotate(10deg); }
+      100% { filter: hue-rotate(0deg); }
     }
     .meter-fill::after {
       content: "0% — SYSTEM FAILURE";
@@ -242,12 +289,52 @@
       transform: translate(-50%, -50%);
       color: #000;
       font-weight: 900;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       white-space: nowrap;
-      text-shadow: 0 0 2px #fff, 0 0 4px #fff;
+      text-shadow: 0 0 3px #fff, 0 0 6px #fff;
+      animation: flicker 0.15s infinite;
+    }
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
     }
 
-    /* Joke cards — like old error dialogs */
+    /* More cool metrics cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.8rem;
+      margin-bottom: 1.5rem;
+    }
+    .metric-card {
+      background: #fff;
+      border: 3px solid #808080;
+      border-top-color: #dfdfdf;
+      border-left-color: #dfdfdf;
+      padding: 0.8rem;
+      text-align: center;
+      transition: transform 0.15s;
+    }
+    .metric-card:hover { transform: translateY(-3px); }
+    .metric-card .label {
+      font-size: 0.75rem;
+      color: #404040;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .metric-card .value {
+      font-family: 'VT323', monospace;
+      font-size: 1.6rem;
+      color: #8b0000;
+      font-weight: 900;
+      margin-top: 0.2rem;
+    }
+    .metric-card .sub {
+      font-size: 0.7rem;
+      color: #808080;
+    }
+
+    /* Dialog boxes */
     .dialog-box {
       background: #fff;
       border: 3px solid #808080;
@@ -256,68 +343,93 @@
       padding: 1rem;
       margin-bottom: 1rem;
       position: relative;
+      transition: box-shadow 0.2s;
     }
+    .dialog-box:hover { box-shadow: 4px 4px 0 #808080; }
     .dialog-box .dialog-icon {
       float: left;
-      font-size: 2rem;
+      font-size: 2.2rem;
       margin-right: 0.8rem;
       line-height: 1;
+      animation: bounce 2s infinite;
     }
-    .dialog-box p {
-      margin: 0;
-      font-size: 0.95rem;
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
     }
+    .dialog-box p { margin: 0; font-size: 0.95rem; }
 
-    /* Fake button — 90s style */
+    /* Retro button */
     .btn-retro {
       display: inline-block;
       background: #c0c0c0;
       border: 3px solid #fff;
       border-right-color: #808080;
       border-bottom-color: #808080;
-      padding: 0.6rem 1.2rem;
+      padding: 0.7rem 1.4rem;
       font-family: 'Courier Prime', monospace;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 1rem;
       color: #000;
       cursor: pointer;
       text-decoration: none;
-      box-shadow: 1px 1px 0 #404040;
+      box-shadow: 2px 2px 0 #404040;
+      transition: all 0.1s;
     }
+    .btn-retro:hover { background: #d0d0d0; }
     .btn-retro:active {
       border-top-color: #808080;
       border-left-color: #808080;
       border-right-color: #fff;
       border-bottom-color: #fff;
-      box-shadow: inset 1px 1px 0 #808080;
-      transform: translate(1px, 1px);
+      box-shadow: inset 2px 2px 0 #808080;
+      transform: translate(2px, 2px);
     }
 
-    /* Footer like old site counters */
+    /* Footer */
     footer {
-      max-width: 720px;
+      max-width: 760px;
       margin: 0 auto 2rem;
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: #404040;
-      padding: 1rem;
+      padding: 1.2rem;
       border-top: 2px dashed #808080;
     }
     footer .counter {
       display: inline-block;
       background: #000;
       color: #0f0;
-      padding: 0.2rem 0.6rem;
+      padding: 0.25rem 0.8rem;
       font-family: 'VT323', monospace;
-      font-size: 1rem;
+      font-size: 1.1rem;
       border: 2px inset #808080;
-      margin-top: 0.5rem;
+      margin-top: 0.6rem;
+      letter-spacing: 2px;
     }
 
-    /* Small responsive tweak */
+    /* Funny API quote area */
+    .funny-quote {
+      background: #000080;
+      color: #fff;
+      padding: 1rem;
+      border: 3px solid #fff;
+      border-right-color: #808080;
+      border-bottom-color: #808080;
+      margin-bottom: 1rem;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      text-align: center;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     @media (max-width: 640px) {
-      h1 { font-size: 2rem; }
-      .window { margin: 1rem; }
+      h1 { font-size: 2.2rem; }
+      .window { margin: 0.8rem; }
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
     }
   </style>
 </head>
@@ -364,16 +476,46 @@
         </table>
       </div>
 
-      <!-- Fake meter -->
+      <!-- More cool metrics -->
+      <h2 style="font-family:'VT323',monospace; font-size:1.4rem; color:#000080; margin-bottom:0.6rem;">📊 EXTRA COOL METRICS 📊</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="label">MEME IQ</div>
+          <div class="value">-42</div>
+          <div class="sub">Below zero</div>
+        </div>
+        <div class="metric-card">
+          <div class="label">DANCE SKILL</div>
+          <div class="value">0.1%</div>
+          <div class="sub">Only the robot</div>
+        </div>
+        <div class="metric-card">
+          <div class="label">FASHION SENSE</div>
+          <div class="value">BROKEN</div>
+          <div class="sub">No signal</div>
+        </div>
+        <div class="metric-card">
+          <div class="label">JOKE QUALITY</div>
+          <div class="value">0/10</div>
+          <div class="sub">Crickets heard</div>
+        </div>
+      </div>
+
+      <!-- Real-time meter -->
       <div class="meter-box">
         <h3>📊 REAL-TIME COOLNESS METER 📊</h3>
         <div class="meter-track">
           <div class="meter-fill"></div>
         </div>
-        <p style="font-size:0.85rem; color:#000;">System status: PERMANENTLY BROKEN. Do not attempt repair.</p>
+        <p style="font-size:0.85rem; color:#000; margin-top:0.5rem;">System status: PERMANENTLY BROKEN. Do not attempt repair.</p>
       </div>
 
-      <!-- Jokes as error dialogs -->
+      <!-- Funny quote from API -->
+      <div class="funny-quote" id="funny-quote">
+        Loading funny wisdom...
+      </div>
+
+      <!-- Jokes -->
       <h2 style="font-family:'VT323',monospace; font-size:1.4rem; color:#000080; margin-bottom:0.5rem;">⚠ SYSTEM ALERTS ⚠</h2>
 
       <div class="dialog-box">
@@ -406,7 +548,7 @@
         <p><strong>Mic Drop:</strong> Your mom's jokes are so bad, the microphone walked off stage.</p>
       </div>
 
-      <a href="#" class="btn-retro" onclick="event.preventDefault(); alert('New insult generated: Your mom is so unfunny, her jokes need laugh tracks in real life.');">🎲 GENERATE NEW INSULT 🎲</a>
+      <a href="#" class="btn-retro" onclick="event.preventDefault(); generateInsult();">🎲 GENERATE NEW INSULT 🎲</a>
     </div>
   </div>
 
@@ -414,18 +556,63 @@
     <p>Built with 100% serious technology. No jokes here.</p>
     <p>Your mom might be cool, but <a href="https://priyanshu.is-not.cool" style="text-decoration: underline; color: #ff5252;">priyanshu.is-not.cool</a>.</p>
     <p>Visit the mirror site: <a href="#" style="color:#000080;">priyanshu.is-not.cool</a></p>
-    <div class="counter">VISITORS: <span id="visitor-count">000042</span></div>
-    <script>
-      (function() {
-        const key = 'ym_visitor_count';
-        let count = parseInt(localStorage.getItem(key), 10);
-        if (!count || isNaN(count)) count = 42;
-        count += 1;
-        localStorage.setItem(key, count);
-        const el = document.getElementById('visitor-count');
-        if (el) el.textContent = String(count).padStart(6, '0');
-      })();
-    </script>
+    <div class="counter">VISITORS: <span id="visitor-count">LOADING...</span></div>
   </footer>
+
+  <script>
+    // REAL GLOBAL VISITOR COUNTER — uses reliable public endpoints (no localStorage)
+    (function() {
+      const el = document.getElementById('visitor-count');
+      fetch('https://counterapi.dev/api/yourmom.cool/visits')
+        .then(r => r.json())
+        .then(data => {
+          if (el && data && data.count !== undefined) {
+            el.textContent = String(data.count).padStart(6, '0');
+          } else if (el) el.textContent = '000042';
+        })
+        .catch(() => {
+          fetch('https://api.countapi.xyz/get/yourmom.cool/visits')
+            .then(r => r.json())
+            .then(data => {
+              if (el && data && data.value !== undefined) {
+                el.textContent = String(data.value).padStart(6, '0');
+              } else if (el) el.textContent = '000042';
+            })
+            .catch(() => { if (el) el.textContent = '000042'; });
+        });
+    })();
+
+    // Funny quote from a free API
+    (function() {
+      const quotes = [
+        "Your mom's coolness is like a black hole — it sucks everything in and nothing escapes.",
+        "Coolness is a social construct. Your mom is a social disaster.",
+        "If coolness were a currency, your mom would be in debt to the universe.",
+        "Scientists say coolness is 90% confidence. Your mom is 100% confusion.",
+        "Your mom's vibe is so broken, even WiFi refuses to connect.",
+        "Cool people have aura. Your mom has an odor.",
+        "The only thing cooler than your mom is absolute zero."
+      ];
+      const el = document.getElementById('funny-quote');
+      if (el) {
+        el.textContent = '"' + quotes[Math.floor(Math.random() * quotes.length)] + '"';
+      }
+    })();
+
+    // Generate new insult (funny API-style interaction)
+    function generateInsult() {
+      const insults = [
+        "Your mom is so unfunny, her jokes need laugh tracks in real life.",
+        "Your mom is so slow, she makes dial-up look like fiber optic.",
+        "Your mom's dance moves are so bad, the floor filed a complaint.",
+        "Your mom's fashion sense is so broken, mirrors refuse to reflect her.",
+        "Your mom is so literal, she brought a ladder to a low bar.",
+        "Your mom's cooking is so bad, the smoke detector sends thank-you notes.",
+        "Your mom's singing is so bad, autotune filed for unemployment.",
+        "Your mom is so bad at directions, GPS asks HER for help."
+      ];
+      alert('New insult generated:\n\n' + insults[Math.floor(Math.random() * insults.length)]);
+    }
+  </script>
 </body>
 </html>
