@@ -3,66 +3,122 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Is Your Mom Cool? — A Scientific Study</title>
+  <title>Is Your Mom Cool? — A Scientific Study (v2.0 Turbo Edition)</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime:wght@700&family=Press+Start+2P&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=VT323&family=Courier+Prime:wght@400;700&family=Press+Start+2P&display=swap');
 
     * { box-sizing: border-box; }
 
+    :root {
+      --win-bg: #c0c0c0;
+      --win-highlight: #ffffff;
+      --win-shadow: #808080;
+      --win-darkshadow: #404040;
+      --win-blue: #000080;
+      --win-blue-light: #1084d0;
+    }
+
     body {
       font-family: 'Courier Prime', 'Courier New', monospace;
-      background: #c0c0c0;
+      background: #008080; /* Classic Win95 Teal */
       color: #000;
       margin: 0;
       padding: 0;
       line-height: 1.4;
       overflow-x: hidden;
+      min-height: 100vh;
     }
 
-    /* 90s tiled background */
+    /* 90s tiled background overlay */
     .bg-tile {
       position: fixed;
       inset: 0;
       z-index: -1;
       background-image:
-        repeating-linear-gradient(45deg, #b8b8b8 0 10px, #a8a8a8 10px 20px),
-        repeating-linear-gradient(-45deg, #c8c8c8 0 10px, #b0b0b0 10px 20px);
-      opacity: 0.6;
+        repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0 10px, transparent 10px 20px),
+        repeating-linear-gradient(-45deg, rgba(255,255,255,0.04) 0 10px, transparent 10px 20px);
+      pointer-events: none;
+    }
+
+    /* Desktop Topbar / Quick Tools */
+    .desktop-toolbar {
+      background: var(--win-bg);
+      border-bottom: 2px solid var(--win-shadow);
+      padding: 4px 8px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      font-family: 'VT323', monospace;
+      font-size: 1.1rem;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .toolbar-label {
+      font-weight: bold;
+      color: var(--win-blue);
+      margin-right: 6px;
+    }
+    .tool-btn {
+      background: var(--win-bg);
+      border: 2px solid var(--win-highlight);
+      border-right-color: var(--win-shadow);
+      border-bottom-color: var(--win-shadow);
+      padding: 2px 8px;
+      font-family: 'VT323', monospace;
+      font-size: 1.05rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+      color: #000;
+    }
+    .tool-btn:active, .tool-btn.active {
+      border: 2px solid var(--win-shadow);
+      border-right-color: var(--win-highlight);
+      border-bottom-color: var(--win-highlight);
+      background: #d8d8d8;
     }
 
     /* Fake Windows 95-style window */
     .window {
-      max-width: 760px;
-      margin: 2rem auto;
-      background: #c0c0c0;
-      border: 3px solid #fff;
-      border-right-color: #808080;
-      border-bottom-color: #808080;
-      border-top-color: #dfdfdf;
-      border-left-color: #dfdfdf;
-      box-shadow: 4px 4px 0 #404040;
+      max-width: 820px;
+      margin: 1.5rem auto;
+      background: var(--win-bg);
+      border: 3px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
+      border-top-color: var(--win-highlight);
+      border-left-color: var(--win-highlight);
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
       padding: 0;
       position: relative;
     }
 
     .window-titlebar {
-      background: linear-gradient(90deg, #000080, #1084d0);
+      background: linear-gradient(90deg, var(--win-blue), var(--win-blue-light));
       color: #fff;
-      padding: 5px 10px;
+      padding: 4px 8px;
       font-family: 'VT323', monospace;
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       letter-spacing: 1px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 2px solid #808080;
+      border-bottom: 2px solid var(--win-shadow);
     }
-
-    .window-titlebar .btn-close {
-      background: #c0c0c0;
-      border: 2px solid #fff;
-      border-right-color: #808080;
-      border-bottom-color: #808080;
+    .titlebar-controls {
+      display: flex;
+      gap: 3px;
+    }
+    .titlebar-btn {
+      background: var(--win-bg);
+      border: 2px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
       width: 20px;
       height: 20px;
       display: flex;
@@ -72,20 +128,24 @@
       font-weight: bold;
       cursor: pointer;
       color: #000;
-      transition: transform 0.1s;
+      line-height: 1;
     }
-    .window-titlebar .btn-close:hover { transform: scale(1.15); }
+    .titlebar-btn:active {
+      border: 2px solid var(--win-darkshadow);
+      border-right-color: var(--win-highlight);
+      border-bottom-color: var(--win-highlight);
+    }
 
     .window-body { padding: 1.5rem; }
 
-    /* Marquee banner */
+    /* Marquee ticker */
     .ticker {
       background: #000;
       color: #0f0;
       font-family: 'VT323', monospace;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       padding: 0.4rem 0.8rem;
-      border: 2px inset #808080;
+      border: 2px inset var(--win-shadow);
       margin-bottom: 1rem;
       white-space: nowrap;
       overflow: hidden;
@@ -93,20 +153,21 @@
     }
     .ticker span {
       display: inline-block;
-      animation: ticker 10s linear infinite;
+      animation: ticker 14s linear infinite;
     }
     @keyframes ticker {
-      0% { transform: translateX(110%); }
-      100% { transform: translateX(-110%); }
+      0% { transform: translateX(100vw); }
+      100% { transform: translateX(-100%); }
     }
 
     h1 {
       font-family: 'VT323', monospace;
-      font-size: 3.2rem;
+      font-size: 3.4rem;
       margin: 0 0 0.5rem;
-      color: #000080;
+      color: var(--win-blue);
       text-shadow: 3px 3px 0 #fff;
-      letter-spacing: -2px;
+      letter-spacing: -1px;
+      text-align: center;
       animation: wobble 4s ease-in-out infinite;
     }
     @keyframes wobble {
@@ -117,11 +178,12 @@
     .subtitle {
       font-family: 'Courier Prime', monospace;
       font-size: 0.95rem;
-      color: #404040;
-      margin-bottom: 1.5rem;
+      color: #333;
+      margin-bottom: 1.2rem;
+      text-align: center;
     }
 
-    /* Fake "Under Construction" banner */
+    /* Under Construction */
     .under-construction {
       background: repeating-linear-gradient(
         45deg,
@@ -132,7 +194,7 @@
       );
       color: #000;
       text-align: center;
-      padding: 0.35rem;
+      padding: 0.4rem;
       font-weight: 900;
       font-size: 0.9rem;
       border-top: 2px solid #000;
@@ -142,17 +204,17 @@
       animation: blink 1.2s step-end infinite;
     }
     @keyframes blink {
-      50% { opacity: 0.7; }
+      50% { opacity: 0.75; }
     }
 
-    /* Fake profile card */
+    /* ID Card */
     .id-card {
       background: #fff;
       border: 3px solid #000;
-      padding: 1rem;
+      padding: 1.2rem;
       margin-bottom: 1.5rem;
       position: relative;
-      box-shadow: 6px 6px 0 #808080;
+      box-shadow: 6px 6px 0 var(--win-shadow);
     }
     .id-card::before {
       content: "TOP SECRET — EYES ONLY";
@@ -175,26 +237,41 @@
       100% { transform: translateX(-50%) rotate(-3deg) scale(1); }
     }
 
+    .id-card-avatar-wrap {
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+    }
     .id-card img {
-      width: 110px;
-      height: 110px;
+      width: 120px;
+      height: 120px;
       border: 3px solid #000;
       filter: grayscale(100%) contrast(120%);
-      display: block;
-      margin: 0 auto 0.8rem;
+      display: inline-block;
+      margin: 0 auto 0.4rem;
       animation: float 3s ease-in-out infinite;
+      transition: filter 0.2s, transform 0.2s;
+    }
+    .id-card img:hover {
+      filter: grayscale(0%) contrast(110%);
+      transform: scale(1.05);
+    }
+    .avatar-hint {
+      font-size: 0.72rem;
+      color: #666;
+      margin-bottom: 0.6rem;
     }
     @keyframes float {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-6px); }
+      50% { transform: translateY(-5px); }
     }
 
     .id-card h2 {
       font-family: 'VT323', monospace;
-      font-size: 2rem;
-      margin: 0 0 0.3rem;
+      font-size: 2.2rem;
+      margin: 0 0 0.2rem;
       text-align: center;
-      color: #000080;
+      color: var(--win-blue);
     }
 
     .id-card .status-badge {
@@ -202,39 +279,40 @@
       background: #8b0000;
       color: #fff;
       padding: 0.2rem 0.7rem;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 900;
       border: 2px solid #000;
       margin-top: 0.3rem;
       animation: pulse 1.5s infinite;
+      cursor: pointer;
     }
     @keyframes pulse {
       0%, 100% { box-shadow: 0 0 0 #8b0000; }
-      50% { box-shadow: 0 0 10px #8b0000; }
+      50% { box-shadow: 0 0 12px #8b0000; }
     }
 
-    /* Stats table */
+    /* Stats Table */
     .stats-table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 0.8rem;
-      font-size: 0.9rem;
+      margin-top: 1rem;
+      font-size: 0.92rem;
     }
     .stats-table th, .stats-table td {
-      border: 1px solid #808080;
+      border: 1px solid var(--win-shadow);
       padding: 0.45rem 0.6rem;
       text-align: left;
     }
     .stats-table th {
-      background: #000080;
+      background: var(--win-blue);
       color: #fff;
       font-family: 'VT323', monospace;
-      font-size: 1.05rem;
+      font-size: 1.15rem;
     }
     .stats-table td.value-bad {
       color: #8b0000;
       font-weight: 900;
-      animation: shake 2s ease-in-out infinite;
+      animation: shake 2.5s ease-in-out infinite;
     }
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
@@ -245,13 +323,31 @@
       90% { transform: translateX(-1px); }
     }
 
+    /* Section Subheaders */
+    .section-head {
+      font-family: 'VT323', monospace;
+      font-size: 1.5rem;
+      color: var(--win-blue);
+      margin: 1.8rem 0 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--win-shadow);
+      padding-bottom: 4px;
+    }
+
     /* Meter */
     .meter-box {
       background: #fff;
-      border: 3px inset #808080;
+      border: 3px inset var(--win-shadow);
       padding: 1rem;
       margin-bottom: 1.5rem;
       position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .meter-box:hover {
+      background: #fff8f8;
     }
     .meter-box h3 {
       font-family: 'VT323', monospace;
@@ -261,9 +357,9 @@
     }
     .meter-track {
       width: 100%;
-      height: 30px;
-      background: #808080;
-      border: 2px inset #c0c0c0;
+      height: 32px;
+      background: #707070;
+      border: 2px inset var(--win-bg);
       position: relative;
       overflow: hidden;
     }
@@ -282,24 +378,24 @@
       100% { filter: hue-rotate(0deg); }
     }
     .meter-fill::after {
-      content: "0% — SYSTEM FAILURE";
+      content: "0% — SYSTEM FAILURE (CLICK TO TEST)";
       position: absolute;
       left: 50%;
       top: 50%;
       transform: translate(-50%, -50%);
-      color: #000;
+      color: #fff;
       font-weight: 900;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       white-space: nowrap;
-      text-shadow: 0 0 3px #fff, 0 0 6px #fff;
-      animation: flicker 0.15s infinite;
+      text-shadow: 0 0 4px #000, 0 0 8px #f00;
+      animation: flicker 0.2s infinite;
     }
     @keyframes flicker {
       0%, 100% { opacity: 1; }
-      50% { opacity: 0.6; }
+      50% { opacity: 0.65; }
     }
 
-    /* More cool metrics cards */
+    /* Metrics Grid */
     .metrics-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -308,14 +404,15 @@
     }
     .metric-card {
       background: #fff;
-      border: 3px solid #808080;
-      border-top-color: #dfdfdf;
-      border-left-color: #dfdfdf;
+      border: 3px solid var(--win-shadow);
+      border-top-color: var(--win-highlight);
+      border-left-color: var(--win-highlight);
       padding: 0.8rem;
       text-align: center;
       transition: transform 0.15s;
+      cursor: pointer;
     }
-    .metric-card:hover { transform: translateY(-3px); }
+    .metric-card:hover { transform: translateY(-3px); box-shadow: 2px 2px 0 #000; }
     .metric-card .label {
       font-size: 0.75rem;
       color: #404040;
@@ -324,109 +421,18 @@
     }
     .metric-card .value {
       font-family: 'VT323', monospace;
-      font-size: 1.6rem;
+      font-size: 1.8rem;
       color: #8b0000;
       font-weight: 900;
       margin-top: 0.2rem;
     }
     .metric-card .sub {
-      font-size: 0.7rem;
-      color: #808080;
+      font-size: 0.75rem;
+      color: #333333;
+      font-weight: 600;
     }
 
-    /* Dialog boxes */
-    .dialog-box {
-      background: #fff;
-      border: 3px solid #808080;
-      border-top-color: #dfdfdf;
-      border-left-color: #dfdfdf;
-      padding: 1rem;
-      margin-bottom: 1rem;
-      position: relative;
-      transition: box-shadow 0.2s;
-    }
-    .dialog-box:hover { box-shadow: 4px 4px 0 #808080; }
-    .dialog-box .dialog-icon {
-      float: left;
-      font-size: 2.2rem;
-      margin-right: 0.8rem;
-      line-height: 1;
-      animation: bounce 2s infinite;
-    }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-4px); }
-    }
-    .dialog-box p { margin: 0; font-size: 0.95rem; }
-
-    /* Retro button */
-    .btn-retro {
-      display: inline-block;
-      background: #c0c0c0;
-      border: 3px solid #fff;
-      border-right-color: #808080;
-      border-bottom-color: #808080;
-      padding: 0.7rem 1.4rem;
-      font-family: 'Courier Prime', monospace;
-      font-weight: 700;
-      font-size: 1rem;
-      color: #000;
-      cursor: pointer;
-      text-decoration: none;
-      box-shadow: 2px 2px 0 #404040;
-      transition: all 0.1s;
-    }
-    .btn-retro:hover { background: #d0d0d0; }
-    .btn-retro:active {
-      border-top-color: #808080;
-      border-left-color: #808080;
-      border-right-color: #fff;
-      border-bottom-color: #fff;
-      box-shadow: inset 2px 2px 0 #808080;
-      transform: translate(2px, 2px);
-    }
-
-    /* Footer */
-    footer {
-      max-width: 760px;
-      margin: 0 auto 2rem;
-      text-align: center;
-      font-size: 0.85rem;
-      color: #404040;
-      padding: 1.2rem;
-      border-top: 2px dashed #808080;
-    }
-    footer .counter {
-      display: inline-block;
-      background: #000;
-      color: #0f0;
-      padding: 0.25rem 0.8rem;
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem;
-      border: 2px inset #808080;
-      margin-top: 0.6rem;
-      letter-spacing: 2px;
-    }
-
-    /* Funny API quote area */
-    .funny-quote {
-      background: #000080;
-      color: #fff;
-      padding: 1rem;
-      border: 3px solid #fff;
-      border-right-color: #808080;
-      border-bottom-color: #808080;
-      margin-bottom: 1rem;
-      font-family: 'VT323', monospace;
-      font-size: 1.1rem;
-      text-align: center;
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* NEW EXTRA METRICS */
+    /* Extra Metrics */
     .extra-metrics {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -435,14 +441,16 @@
     }
     .extra-card {
       background: #fff;
-      border: 3px solid #808080;
-      border-top-color: #dfdfdf;
-      border-left-color: #dfdfdf;
+      border: 3px solid var(--win-shadow);
+      border-top-color: var(--win-highlight);
+      border-left-color: var(--win-highlight);
       padding: 1rem;
       text-align: center;
       position: relative;
       overflow: hidden;
+      cursor: pointer;
     }
+    .extra-card:hover { transform: scale(1.02); }
     .extra-card::after {
       content: "";
       position: absolute;
@@ -462,8 +470,8 @@
     }
     .extra-card .value {
       font-family: 'VT323', monospace;
-      font-size: 2rem;
-      color: #000080;
+      font-size: 2.1rem;
+      color: var(--win-blue);
       font-weight: 900;
       margin-top: 0.3rem;
     }
@@ -473,39 +481,681 @@
       font-weight: 700;
     }
 
+    /* Dialog boxes (System Alerts) */
+    .dialog-box {
+      background: #fff;
+      border: 3px solid var(--win-shadow);
+      border-top-color: var(--win-highlight);
+      border-left-color: var(--win-highlight);
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 0.8rem;
+      position: relative;
+      transition: box-shadow 0.2s;
+    }
+    .dialog-box:hover { box-shadow: 4px 4px 0 var(--win-shadow); }
+    .dialog-box .dialog-icon {
+      float: left;
+      font-size: 2rem;
+      margin-right: 0.8rem;
+      line-height: 1;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    .dialog-box p { margin: 0; font-size: 0.92rem; }
+
+    /* Retro Buttons */
+    .btn-retro {
+      display: inline-block;
+      background: var(--win-bg);
+      border: 3px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
+      padding: 0.6rem 1.2rem;
+      font-family: 'Courier Prime', monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #000;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 2px 2px 0 var(--win-darkshadow);
+      user-select: none;
+      transition: all 0.05s;
+    }
+    .btn-retro:hover { background: #d0d0d0; }
+    .btn-retro:active {
+      border: 3px solid var(--win-darkshadow);
+      border-right-color: var(--win-highlight);
+      border-bottom-color: var(--win-highlight);
+      box-shadow: inset 1px 1px 0 #000;
+      transform: translate(2px, 2px);
+    }
+    .btn-retro-danger {
+      background: #e6b8b8;
+      color: #800000;
+    }
+    .btn-retro-success {
+      background: #b8e6b8;
+      color: #005000;
+    }
+
+    /* Funny quote */
+    .funny-quote {
+      background: var(--win-blue);
+      color: #fff;
+      padding: 1rem;
+      border: 3px solid var(--win-highlight);
+      border-right-color: var(--win-shadow);
+      border-bottom-color: var(--win-shadow);
+      margin-bottom: 1.5rem;
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      text-align: center;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset 2px 2px 0 #000;
+    }
+
+    /* ============================================================
+       FEATURE 1: RETRO SOUNDBOARD (MOM_SOUNDS.WAV)
+       ============================================================ */
+    .soundboard-panel {
+      background: #dfdfdf;
+      border: 3px inset var(--win-shadow);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .soundboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 0.7rem;
+      margin-top: 0.7rem;
+    }
+    .sound-card-btn {
+      background: var(--win-bg);
+      border: 2px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
+      padding: 0.6rem 0.5rem;
+      font-family: 'VT323', monospace;
+      font-size: 1.15rem;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
+      transition: background 0.1s;
+    }
+    .sound-card-btn:hover { background: #ffffd0; }
+    .sound-card-btn:active {
+      border: 2px solid var(--win-darkshadow);
+      border-right-color: var(--win-highlight);
+      border-bottom-color: var(--win-highlight);
+      transform: translate(1px, 1px);
+    }
+    .sound-icon { font-size: 1.4rem; display: block; margin-bottom: 2px; }
+
+    /* ============================================================
+       FEATURE 2: DEFROST THE CHICKEN MINIGAME (PANIC.EXE)
+       ============================================================ */
+    .minigame-box {
+      background: #111;
+      color: #0f0;
+      border: 3px solid #ff3333;
+      padding: 1.2rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+      position: relative;
+    }
+    .minigame-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px dashed #ff5555;
+      padding-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+    .minigame-title {
+      font-family: 'VT323', monospace;
+      font-size: 1.6rem;
+      color: #ff5555;
+      text-shadow: 0 0 6px #f00;
+    }
+    .minigame-timer {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1.1rem;
+      color: #ffff00;
+      background: #000;
+      padding: 4px 8px;
+      border: 2px solid #555;
+    }
+    .chicken-display {
+      text-align: center;
+      margin: 1rem 0;
+    }
+    .chicken-sprite {
+      font-size: 4rem;
+      display: inline-block;
+      transition: transform 0.1s;
+      filter: drop-shadow(0 0 8px #00e5ff);
+    }
+    .chicken-temp-badge {
+      font-family: 'VT323', monospace;
+      font-size: 1.4rem;
+      color: #00e5ff;
+      margin-top: 4px;
+    }
+    .defrost-bar-wrap {
+      width: 100%;
+      height: 32px;
+      background: #222;
+      border: 2px solid #fff;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+    .defrost-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, #00b4d8, #ffb703, #fb8500, #d90429);
+      transition: width 0.05s ease-out;
+    }
+    .defrost-bar-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: 'VT323', monospace;
+      font-size: 1.3rem;
+      color: #fff;
+      text-shadow: 0 0 4px #000, 0 0 8px #000;
+      font-weight: bold;
+      pointer-events: none;
+    }
+    .minigame-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .btn-mash {
+      background: #b71c1c;
+      color: #fff;
+      border: 3px solid #ef9a9a;
+      border-right-color: #5f0909;
+      border-bottom-color: #5f0909;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.85rem;
+      padding: 0.8rem 1.4rem;
+      cursor: pointer;
+      user-select: none;
+      box-shadow: 0 4px 0 #5f0909;
+      letter-spacing: 1px;
+    }
+    .btn-mash:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 #bf360c;
+    }
+
+    /* ============================================================
+       FEATURE 3: MOMMYCLIPPY VIRTUAL ASSISTANT
+       ============================================================ */
+    .clippy-widget {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      pointer-events: auto;
+    }
+    .clippy-bubble {
+      background: #ffffe1; /* Win95 Tooltip Yellow */
+      border: 2px solid #000;
+      padding: 10px 12px;
+      border-radius: 4px;
+      box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
+      max-width: 270px;
+      font-size: 0.88rem;
+      margin-bottom: 8px;
+      position: relative;
+      animation: popIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.7); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .clippy-bubble::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      right: 35px;
+      border-width: 10px 8px 0 8px;
+      border-style: solid;
+      border-color: #000 transparent transparent transparent;
+    }
+    .clippy-bubble::before {
+      content: "";
+      position: absolute;
+      bottom: -7px;
+      right: 36px;
+      border-width: 8px 7px 0 7px;
+      border-style: solid;
+      border-color: #ffffe1 transparent transparent transparent;
+      z-index: 1;
+    }
+    .clippy-bubble-title {
+      font-family: 'VT323', monospace;
+      font-size: 1.15rem;
+      color: #000080;
+      font-weight: bold;
+      border-bottom: 1px solid #aaa;
+      padding-bottom: 2px;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .clippy-actions {
+      display: flex;
+      gap: 5px;
+      margin-top: 8px;
+    }
+    .clippy-btn {
+      background: #e8e8e8;
+      border: 1px solid #000;
+      font-size: 0.75rem;
+      padding: 3px 6px;
+      cursor: pointer;
+      font-family: 'Courier Prime', monospace;
+      font-weight: bold;
+    }
+    .clippy-btn:hover { background: #fff; }
+    .clippy-avatar {
+      width: 75px;
+      height: 75px;
+      background: var(--win-bg);
+      border: 2px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      position: relative;
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+      animation: clippyBounce 3s ease-in-out infinite;
+    }
+    @keyframes clippyBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .clippy-face {
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+
+    /* ============================================================
+       FEATURE 4: MOM_MESSENGER.BAT RETRO CHAT
+       ============================================================ */
+    .messenger-container {
+      background: var(--win-bg);
+      border: 3px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
+      box-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+      margin-bottom: 1.8rem;
+    }
+    .messenger-titlebar {
+      background: linear-gradient(90deg, #005500, #00aa00);
+      color: #fff;
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      padding: 3px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-box {
+      background: #fff;
+      border: 2px inset var(--win-shadow);
+      height: 230px;
+      overflow-y: auto;
+      padding: 10px;
+      margin: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+    .chat-msg {
+      max-width: 82%;
+      padding: 6px 10px;
+      border-radius: 4px;
+      line-height: 1.35;
+      word-wrap: break-word;
+      box-shadow: 1px 1px 2px rgba(0,0,0,0.15);
+    }
+    .msg-mom {
+      background: #ffebee;
+      border-left: 4px solid #e91e63;
+      align-self: flex-start;
+    }
+    .msg-you {
+      background: #e3f2fd;
+      border-right: 4px solid #2196f3;
+      align-self: flex-end;
+    }
+    .msg-meta {
+      font-size: 0.72rem;
+      color: #333;
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .glitter-text {
+      background: linear-gradient(90deg, #ff007f, #9b59b6, #3498db, #2ecc71, #f1c40f, #e67e22, #e74c3c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+      animation: glitterRainbow 3s linear infinite;
+    }
+    @keyframes glitterRainbow {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+    .audio-note-bubble {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #fce4ec;
+      padding: 6px;
+      border: 1px solid #f48fb1;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .audio-note-bubble:hover { background: #f8bbd0; }
+    .chat-quick-replies {
+      padding: 0 10px 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chat-reply-btn {
+      background: var(--win-bg);
+      border: 2px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: 'Courier Prime', monospace;
+    }
+    .chat-reply-btn:hover { background: #e0e0e0; }
+
+    /* ============================================================
+       FEATURE 5: BIOMETRIC MOM SCANNER (SCANNER.EXE)
+       ============================================================ */
+    .scanner-panel {
+      background: #202020;
+      color: #00ff66;
+      border: 3px solid #00aa44;
+      padding: 1.2rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 0 10px rgba(0, 255, 100, 0.2);
+      font-family: 'VT323', monospace;
+    }
+    .scanner-input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .scanner-input {
+      flex: 1;
+      min-width: 200px;
+      background: #000;
+      color: #00ff66;
+      border: 2px inset var(--win-shadow);
+      padding: 6px 10px;
+      font-family: 'VT323', monospace;
+      font-size: 1.3rem;
+    }
+    .scanner-progress-bar {
+      height: 24px;
+      background: #000;
+      border: 2px solid #00aa44;
+      position: relative;
+      margin-bottom: 1rem;
+      display: none;
+    }
+    .scanner-progress-fill {
+      width: 0%;
+      height: 100%;
+      background: repeating-linear-gradient(90deg, #00aa44 0 10px, #00ff66 10px 20px);
+      transition: width 0.1s linear;
+    }
+    .scanner-results {
+      background: #000;
+      border: 2px inset #00aa44;
+      padding: 10px;
+      font-size: 1.25rem;
+      line-height: 1.4;
+      display: none;
+    }
+    .scan-crit { color: #ff3333; font-weight: bold; }
+    .scan-warn { color: #ffaa00; }
+    .scan-highlight { color: #00ffff; }
+
+    /* ============================================================
+       FEATURE 6: VISUAL GAGS (CRT GLITCH, SCREEN SHAKE, SLIPPERS)
+       ============================================================ */
+    .screen-shaking {
+      animation: violentShake 0.5s ease-in-out infinite !important;
+    }
+    @keyframes violentShake {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      20% { transform: translate(-8px, 6px) rotate(-1deg); }
+      40% { transform: translate(7px, -6px) rotate(1.5deg); }
+      60% { transform: translate(-6px, -4px) rotate(-1deg); }
+      80% { transform: translate(6px, 5px) rotate(1deg); }
+      100% { transform: translate(0, 0) rotate(0deg); }
+    }
+
+    .crt-glitching::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+      background-size: 100% 4px, 6px 100%;
+      pointer-events: none;
+      z-index: 99999;
+      animation: crtFlicker 0.15s infinite;
+    }
+    @keyframes crtFlicker {
+      0% { opacity: 0.9; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* Flying Slipper Particle Trail Canvas */
+    #slipper-canvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9998;
+    }
+
+    /* ============================================================
+       CUSTOM RETRO WIN95 MODAL (REPLACES ALERT)
+       ============================================================ */
+    .retro-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 100000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+    }
+    .retro-modal {
+      width: 440px;
+      max-width: 95%;
+      background: var(--win-bg);
+      border: 3px solid var(--win-highlight);
+      border-right-color: var(--win-darkshadow);
+      border-bottom-color: var(--win-darkshadow);
+      box-shadow: 6px 6px 0 rgba(0,0,0,0.5);
+    }
+    .retro-modal-titlebar {
+      background: linear-gradient(90deg, var(--win-blue), var(--win-blue-light));
+      color: #fff;
+      padding: 4px 8px;
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .retro-modal-body {
+      padding: 1.2rem;
+      display: flex;
+      gap: 15px;
+      align-items: flex-start;
+      font-size: 0.95rem;
+    }
+    .retro-modal-icon {
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+    .retro-modal-footer {
+      padding: 0.8rem 1rem;
+      background: #dfdfdf;
+      border-top: 2px solid var(--win-shadow);
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    /* ============================================================
+       BLUE SCREEN OF DEATH (BSOD) OVERLAY
+       ============================================================ */
+    .bsod-overlay {
+      position: fixed;
+      inset: 0;
+      background: #0000aa;
+      color: #ffffff;
+      z-index: 200000;
+      padding: 2.5rem 2rem;
+      font-family: 'VT323', 'Courier New', monospace;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    .bsod-inner {
+      max-width: 780px;
+      font-size: 1.35rem;
+      line-height: 1.45;
+    }
+    .bsod-badge {
+      background: #aaaaaa;
+      color: #0000aa;
+      padding: 2px 10px;
+      font-weight: bold;
+      display: inline-block;
+      margin-bottom: 1.5rem;
+    }
+    .bsod-blink {
+      animation: blink 0.8s step-end infinite;
+    }
+
+    /* Footer */
+    footer {
+      max-width: 820px;
+      margin: 0 auto 3rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #222;
+      padding: 1.5rem 1rem;
+      border-top: 2px dashed #004d40;
+    }
+    footer .counter {
+      display: inline-block;
+      background: #000;
+      color: #0f0;
+      padding: 0.3rem 0.9rem;
+      font-family: 'VT323', monospace;
+      font-size: 1.2rem;
+      border: 2px inset var(--win-shadow);
+      margin-top: 0.6rem;
+      letter-spacing: 2px;
+    }
+
     @media (max-width: 640px) {
-      h1 { font-size: 2.2rem; }
-      .window { margin: 0.8rem; }
+      h1 { font-size: 2.3rem; }
+      .window { margin: 0.6rem; }
       .metrics-grid { grid-template-columns: 1fr 1fr; }
+      .soundboard-grid { grid-template-columns: 1fr 1fr; }
+      .clippy-bubble { max-width: 220px; font-size: 0.82rem; }
     }
   </style>
 </head>
 <body>
   <div class="bg-tile"></div>
+  <canvas id="slipper-canvas"></canvas>
 
-  <div class="window">
+  <!-- Windows 95 Desktop Toolbar -->
+  <div class="desktop-toolbar">
+    <span class="toolbar-label">💾 WIN95_MOM:</span>
+    <button class="tool-btn active" id="btn-sound-toggle" onclick="toggleSound()">🔊 SOUND: ON</button>
+    <button class="tool-btn active" id="btn-slipper-toggle" onclick="toggleSlipperTrail()">🩴 SLIPPER TRAIL: ON</button>
+    <button class="tool-btn" onclick="scrollToSection('panic-section')">🍗 DEFROST_CHICKEN.EXE</button>
+    <button class="tool-btn" onclick="scrollToSection('messenger-section')">💬 MOM_MESSENGER</button>
+    <button class="tool-btn" onclick="scrollToSection('scanner-section')">🔬 SCANNER.EXE</button>
+    <button class="tool-btn" onclick="scrollToSection('soundboard-section')">📻 SOUNDBOARD</button>
+    <button class="tool-btn" onclick="triggerBsodManual()">💀 BSOD</button>
+  </div>
+
+  <!-- Main Window -->
+  <div class="window" id="main-window">
     <div class="window-titlebar">
-      <span>📁 YOUR_MOM.EXE — [NOT COOL]</span>
-      <span class="btn-close" onclick="alert('You cannot close reality.')">×</span>
+      <span>📁 YOUR_MOM.EXE — [NOT COOL — PERMANENT FAILURE]</span>
+      <div class="titlebar-controls">
+        <span class="titlebar-btn" onclick="playWinClick(); playBoing();">_</span>
+        <span class="titlebar-btn" onclick="playWinClick(); toggleGlitch();">□</span>
+        <span class="titlebar-btn" onclick="handleWindowCloseAttempt()">×</span>
+      </div>
     </div>
 
     <div class="window-body">
       <div class="ticker">
-        <span>⚠ BREAKING: SCIENTISTS CONFIRM YOUR MOM IS NOT COOL ⚠ NO REFUNDS ⚠ PLEASE STOP ASKING ⚠</span>
+        <span>⚠ BREAKING: SCIENTISTS CONFIRM YOUR MOM IS NOT COOL ⚠ "WE HAVE FOOD AT HOME" IDENTIFIED AS ROOT CAUSE ⚠ TUPPERWARE CRISIS IMMINENT ⚠ NO REFUNDS ⚠</span>
       </div>
 
       <div class="under-construction">
-        🚧 THIS SITE IS UNDER CONSTRUCTION FOREVER 🚧
+        🚧 THIS SITE IS UNDER CONSTRUCTION FOREVER (LIKE CLEANING YOUR ROOM) 🚧
       </div>
 
       <h1>Is Your Mom Cool?</h1>
-      <p class="subtitle">A peer-reviewed scientific study by the International Board of Not-Cool Moms (IBNCM). Results are final.</p>
+      <p class="subtitle">A peer-reviewed scientific study by the International Board of Not-Cool Moms (IBNCM). Results are irreversible.</p>
 
       <!-- Fake ID Card -->
       <div class="id-card">
-        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=YourMomNotCool" alt="Your Mom" />
+        <div class="id-card-avatar-wrap" onclick="randomizeMomAvatar()">
+          <img id="mom-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=YourMomNotCool" alt="Your Mom" />
+          <div class="avatar-hint">[ 👆 Click to regenerate Mom's avatar ]</div>
+        </div>
         <h2>YOUR MOM</h2>
-        <p style="text-align:center; font-size:0.85rem; color:#404040;">Status: <span class="status-badge">UNCERTIFIED COOL</span></p>
+        <p style="text-align:center; font-size:0.88rem; color:#404040; margin:0;">
+          Status: <span class="status-badge" onclick="showCoolStatusAlert()">UNCERTIFIED COOL (CLICK FOR AUDIT)</span>
+        </p>
+
         <table class="stats-table">
           <thead>
             <tr><th>Metric</th><th>Score</th><th>Notes</th></tr>
@@ -513,83 +1163,160 @@
           <tbody>
             <tr><td>Cool Points</td><td class="value-bad">0 / 100</td><td>Irrecoverable</td></tr>
             <tr><td>Vibes</td><td class="value-bad">BROKEN</td><td>Beyond repair</td></tr>
-            <tr><td>Swagger</td><td class="value-bad">NONE</td><td>Not found</td></tr>
-            <tr><td>Photogenic</td><td class="value-bad">NO</td><td>Cameras refuse</td></tr>
-            <tr><td>Rizz</td><td class="value-bad">-99</td><td>Negative rizz detected</td></tr>
-            <tr><td>Drip / Fit</td><td class="value-bad">0/10</td><td>Wears socks with sandals</td></tr>
-            <tr><td>Social Battery</td><td class="value-bad">DEAD</td><td>Does not charge</td></tr>
-            <tr><td>Coolness Index</td><td class="value-bad">0.00%</td><td>Certified uncool</td></tr>
+            <tr><td>Swagger</td><td class="value-bad">NONE</td><td>Not found on hard drive</td></tr>
+            <tr><td>Photogenic</td><td class="value-bad">NO</td><td>Takes photos with iPad at concerts</td></tr>
+            <tr><td>Rizz</td><td class="value-bad">-99</td><td>Anti-rizz aura confirmed</td></tr>
+            <tr><td>Drip / Fit</td><td class="value-bad">0 / 10</td><td>Capri pants + Costco orthotics</td></tr>
+            <tr><td>Social Battery</td><td class="value-bad">DEAD</td><td>Asleep at 8:14 PM during movies</td></tr>
+            <tr><td>Coolness Index</td><td class="value-bad">0.00%</td><td>Certified scientifically uncool</td></tr>
           </tbody>
         </table>
       </div>
 
-      <!-- More cool metrics -->
-      <h2 style="font-family:'VT323',monospace; font-size:1.4rem; color:#000080; margin-bottom:0.6rem;">📊 EXTRA COOL METRICS 📊</h2>
-      <div class="metrics-grid">
-        <div class="metric-card">
-          <div class="label">MEME IQ</div>
-          <div class="value">-42</div>
-          <div class="sub">Below zero</div>
-        </div>
-        <div class="metric-card">
-          <div class="label">DANCE SKILL</div>
-          <div class="value">0.1%</div>
-          <div class="sub">Only the robot</div>
-        </div>
-        <div class="metric-card">
-          <div class="label">FASHION SENSE</div>
-          <div class="value">BROKEN</div>
-          <div class="sub">No signal</div>
-        </div>
-        <div class="metric-card">
-          <div class="label">JOKE QUALITY</div>
-          <div class="value">0/10</div>
-          <div class="sub">Crickets heard</div>
+      <!-- ============================================================
+           FEATURE 1: RETRO SOUNDBOARD
+           ============================================================ -->
+      <div class="section-head" id="soundboard-section">
+        <span>📻 RETRO SOUNDBOARD (MOM_SOUNDS.WAV)</span>
+        <small style="font-size:0.9rem; color:#000080; font-weight:bold;">8-Bit Synth Audio</small>
+      </div>
+      <div class="soundboard-panel">
+        <p style="margin:0 0 0.5rem; font-size:0.88rem;">Click buttons to trigger vintage synth mom catchphrases and retro computer audio effects:</p>
+        <div class="soundboard-grid">
+          <button class="sound-card-btn" onclick="playMomPhrase('We have food at home!')">
+            <span class="sound-icon">🍲</span> "We have food at home"
+          </button>
+          <button class="sound-card-btn" onclick="playMomPhrase('Who left the hallway light on?!')">
+            <span class="sound-icon">💡</span> "Who left light on?!"
+          </button>
+          <button class="sound-card-btn" onclick="playMomPhrase('Wait till your father gets home!')">
+            <span class="sound-icon">⏳</span> "Wait till father gets home"
+          </button>
+          <button class="sound-card-btn" onclick="playMomPhrase('Because I said so!')">
+            <span class="sound-icon">📢</span> "Because I said so!"
+          </button>
+          <button class="sound-card-btn" onclick="playMomPhrase('Close the refrigerator, you are letting the cold out!')">
+            <span class="sound-icon">🧊</span> "Close the fridge!"
+          </button>
+          <button class="sound-card-btn" onclick="playWinError()">
+            <span class="sound-icon">🛑</span> Win95 Critical Stop
+          </button>
+          <button class="sound-card-btn" onclick="playDialupHandshake()">
+            <span class="sound-icon">📠</span> 56k Dial-Up Chirp
+          </button>
+          <button class="sound-card-btn" onclick="playSlipperWhoosh()">
+            <span class="sound-icon">🩴</span> La Chancla Missile
+          </button>
         </div>
       </div>
 
-      <!-- NEW EXTRA METRICS -->
-      <h2 style="font-family:'VT323',monospace; font-size:1.4rem; color:#000080; margin-bottom:0.6rem;">🔥 LIVE COOLNESS DATA 🔥</h2>
+      <!-- ============================================================
+           FEATURE 2: DEFROST THE CHICKEN MINIGAME
+           ============================================================ -->
+      <div class="section-head" id="panic-section">
+        <span>🍗 DEFROST_CHICKEN.EXE (QUICK-TIME MINIGAME)</span>
+        <small style="font-size:0.9rem; color:#8b0000; font-weight:bold;">HIGH TENSION</small>
+      </div>
+      <div class="minigame-box">
+        <div class="minigame-header">
+          <span class="minigame-title">🚨 PANIC! MOM IS 2 MINUTES AWAY! 🚨</span>
+          <span class="minigame-timer" id="chicken-timer">10.0s</span>
+        </div>
+        <p style="margin:0; font-size:0.92rem; color:#e0e0e0;">
+          Mom texted: <em>"Turning into the street now, did you take the chicken out of the freezer?"</em><br>
+          <strong>OBJECTIVE:</strong> Rapidly mash the button or spam SPACEBAR to defrost it before time expires!
+        </p>
+
+        <div class="chicken-display">
+          <div class="chicken-sprite" id="chicken-sprite">🧊🍗🧊</div>
+          <div class="chicken-temp-badge" id="chicken-status">STATUS: SOLID FROZEN ROCK (-18°C)</div>
+        </div>
+
+        <div class="defrost-bar-wrap">
+          <div class="defrost-bar-fill" id="defrost-bar"></div>
+          <div class="defrost-bar-text" id="defrost-text">DEFROST PROGRESS: 0%</div>
+        </div>
+
+        <div class="minigame-controls">
+          <button class="btn-mash" id="btn-start-game" onclick="startChickenMinigame()">▶ START PANIC MODE</button>
+          <button class="btn-mash" id="btn-mash-game" onclick="mashChickenDefrost()" style="display:none;">🔥 MASH RAPIDLY! 🔥</button>
+          <button class="tool-btn" onclick="resetChickenMinigame()" style="background:#333; color:#fff;">RESET</button>
+        </div>
+      </div>
+
+      <!-- More cool metrics -->
+      <div class="section-head">
+        <span>📊 EXTRA COOL METRICS 📊</span>
+      </div>
+      <div class="metrics-grid">
+        <div class="metric-card" onclick="playBuzzer(); triggerScreenShake();">
+          <div class="label">MEME IQ</div>
+          <div class="value">-42</div>
+          <div class="sub">Shares Minion memes from 2012</div>
+        </div>
+        <div class="metric-card" onclick="playBoing()">
+          <div class="label">DANCE SKILL</div>
+          <div class="value">0.1%</div>
+          <div class="sub">Only finger pointing & clapping</div>
+        </div>
+        <div class="metric-card" onclick="playWinError()">
+          <div class="label">FASHION SENSE</div>
+          <div class="value">BROKEN</div>
+          <div class="sub">Tucks sweaters into sweatpants</div>
+        </div>
+        <div class="metric-card" onclick="playBuzzer()">
+          <div class="label">JOKE QUALITY</div>
+          <div class="value">0 / 10</div>
+          <div class="sub">Laughs before delivering punchline</div>
+        </div>
+      </div>
+
+      <!-- Live coolness data -->
+      <div class="section-head">
+        <span>🔥 LIVE COOLNESS DATA 🔥</span>
+      </div>
       <div class="extra-metrics">
-        <div class="extra-card">
+        <div class="extra-card" onclick="playBuzzer()">
           <div class="label">AURA LEVEL</div>
           <div class="value">-∞</div>
-          <div class="sub">Negative infinity</div>
+          <div class="sub">Negative infinity detected</div>
         </div>
-        <div class="extra-card">
+        <div class="extra-card" onclick="playWinError()">
           <div class="label">VIBE CHECK</div>
           <div class="value">FAIL</div>
-          <div class="sub">No vibes detected</div>
+          <div class="sub">Zero vibes registered on radar</div>
         </div>
-        <div class="extra-card">
+        <div class="extra-card" onclick="playBuzzer()">
           <div class="label">SWAG METER</div>
           <div class="value">0.00</div>
-          <div class="sub">Absolute zero</div>
+          <div class="sub">Absolute zero Fahrenheit</div>
         </div>
-        <div class="extra-card">
+        <div class="extra-card" onclick="playBoing()">
           <div class="label">RIZZ INDEX</div>
           <div class="value">-99</div>
-          <div class="sub">Anti-rizz confirmed</div>
+          <div class="sub">Anti-rizz forcefield active</div>
         </div>
-        <div class="extra-card">
+        <div class="extra-card" onclick="triggerScreenShake(); playWinError();">
           <div class="label">CHAOS LEVEL</div>
           <div class="value">MAX</div>
-          <div class="sub">Over 9000</div>
+          <div class="sub">Over 9000 Tupperware lids</div>
         </div>
-        <div class="extra-card">
+        <div class="extra-card" onclick="playBuzzer()">
           <div class="label">MEME POTENTIAL</div>
           <div class="value">0%</div>
-          <div class="sub">No virality</div>
+          <div class="sub">Calls every console "The Nintendo"</div>
         </div>
       </div>
 
       <!-- Real-time meter -->
-      <div class="meter-box">
-        <h3>📊 REAL-TIME COOLNESS METER 📊</h3>
+      <div class="meter-box" onclick="handleMeterClick()">
+        <h3>📊 REAL-TIME COOLNESS METER (CLICK FOR VOLTAGE SURGE) 📊</h3>
         <div class="meter-track">
           <div class="meter-fill"></div>
         </div>
-        <p style="font-size:0.85rem; color:#000; margin-top:0.5rem;">System status: PERMANENTLY BROKEN. Do not attempt repair.</p>
+        <p style="font-size:0.85rem; color:#000; margin-top:0.5rem;">
+          System status: <strong>PERMANENTLY BROKEN</strong>. Tap meter to test circuit overload.
+        </p>
       </div>
 
       <!-- Funny quote from API -->
@@ -597,8 +1324,73 @@
         Loading funny wisdom...
       </div>
 
-      <!-- Jokes -->
-      <h2 style="font-family:'VT323',monospace; font-size:1.4rem; color:#000080; margin-bottom:0.5rem;">⚠ SYSTEM ALERTS ⚠</h2>
+      <!-- ============================================================
+           FEATURE 4: MOM_MESSENGER.BAT RETRO CHAT
+           ============================================================ -->
+      <div class="section-head" id="messenger-section">
+        <span>💬 MOM_MESSENGER.BAT (RETRO INSTANT MESSAGING)</span>
+        <small style="font-size:0.9rem; color:#004d00; font-weight:bold;">Status: Mom is Online</small>
+      </div>
+      <div class="messenger-container">
+        <div class="messenger-titlebar">
+          <span>💬 Mom [Online - Typing with one index finger...]</span>
+          <span style="cursor:pointer;" onclick="playWinClick()">_ □ ×</span>
+        </div>
+        <div class="chat-box" id="chat-box">
+          <div class="chat-msg msg-mom">
+            <div class="msg-meta"><span>Mom</span><span>10:42 AM</span></div>
+            Are you awake? Why haven't you answered my 14 missed calls?
+          </div>
+          <div class="chat-msg msg-mom">
+            <div class="msg-meta"><span>Mom</span><span>10:43 AM</span></div>
+            <div class="glitter-text">✨🌺 GOOD MORNING HAVE A BLESSED BLESSED DAY 🌺✨</div>
+          </div>
+          <div class="chat-msg msg-mom">
+            <div class="msg-meta"><span>Mom</span><span>10:45 AM</span></div>
+            <div class="audio-note-bubble" onclick="playVoiceNoteDemo()">
+              <span>▶ 🎙️ Voice Note (04:12)</span>
+              <small style="color:#666;">[Supermarket muzak + heavy breathing]</small>
+            </div>
+          </div>
+        </div>
+        <div class="chat-quick-replies">
+          <span style="font-size:0.75rem; color:#444; width:100%; display:block;">Canned Teenager Responses:</span>
+          <button class="chat-reply-btn" onclick="sendChatMessage('I was studying mom!')">"I was studying mom!"</button>
+          <button class="chat-reply-btn" onclick="sendChatMessage('It cannot be paused, it is online!')">"It can't be paused!"</button>
+          <button class="chat-reply-btn" onclick="sendChatMessage('We really have food at home?')">"Do we really have food?"</button>
+          <button class="chat-reply-btn" onclick="sendChatMessage('Who took my charger?!')">"Who took my charger?!"</button>
+        </div>
+      </div>
+
+      <!-- ============================================================
+           FEATURE 5: BIOMETRIC MOM SCANNER (SCANNER.EXE)
+           ============================================================ -->
+      <div class="section-head" id="scanner-section">
+        <span>🔬 BIOMETRIC MOM SCANNER (SCANNER.EXE)</span>
+        <small style="font-size:0.9rem; color:#004d00; font-weight:bold;">v3.1 Diagnostic</small>
+      </div>
+      <div class="scanner-panel">
+        <p style="margin:0 0 0.8rem; font-size:1.1rem;">
+          Enter Mom's alias or trait for satellite spectral analysis:
+        </p>
+        <div class="scanner-input-row">
+          <input type="text" id="scanner-input" class="scanner-input" value="Mom (Chief of Food at Home)" placeholder="Type mom nickname...">
+          <button class="btn-retro" onclick="initiateBiometricScan()" style="background:#005522; color:#fff; border-color:#008833; font-weight:bold;">⚡ INITIATE SCAN</button>
+        </div>
+
+        <div class="scanner-progress-bar" id="scanner-progress">
+          <div class="scanner-progress-fill" id="scanner-fill"></div>
+        </div>
+
+        <div class="scanner-results" id="scanner-results">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- System Alerts -->
+      <div class="section-head">
+        <span>⚠ SYSTEM ALERTS & ROASTS ⚠</span>
+      </div>
 
       <div class="dialog-box">
         <div class="dialog-icon">❌</div>
@@ -630,48 +1422,832 @@
         <p><strong>Mic Drop:</strong> Your mom's jokes are so bad, the microphone walked off stage.</p>
       </div>
 
-      <a href="#" class="btn-retro" onclick="event.preventDefault(); generateInsult();">🎲 GENERATE NEW INSULT 🎲</a>
+      <div style="margin-top:1.5rem; display:flex; flex-wrap:wrap; gap:10px;">
+        <button class="btn-retro" onclick="generateRetroInsultModal()">🎲 GENERATE NEW ROAST 🎲</button>
+        <button class="btn-retro btn-retro-danger" onclick="triggerPanicSiren()">🚨 SOUND THE ALARM 🚨</button>
+        <button class="btn-retro btn-retro-success" onclick="callGrandma()">👵 CALL GRANDMA FOR BACKUP</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FEATURE 3: MOMMYCLIPPY VIRTUAL ASSISTANT WIDGET
+       ============================================================ -->
+  <div class="clippy-widget" id="clippy-widget">
+    <div class="clippy-bubble" id="clippy-bubble">
+      <div class="clippy-bubble-title">
+        <span>MommyClippy™</span>
+        <span style="cursor:pointer;" onclick="dismissClippy()">×</span>
+      </div>
+      <div id="clippy-text">
+        It looks like you've been on the computer for 11 minutes! Would you like to put on a sweater before you catch pneumonia?
+      </div>
+      <div class="clippy-actions">
+        <button class="clippy-btn" onclick="clippyNextAdvice()">Next Advice</button>
+        <button class="clippy-btn" onclick="clippyReply('Put on sweater')">Put on Sweater</button>
+        <button class="clippy-btn" onclick="dismissClippy()">Dismiss</button>
+      </div>
+    </div>
+    <div class="clippy-avatar" onclick="clippyClicked()" title="Click MommyClippy for maternal wisdom!">
+      <span class="clippy-face" id="clippy-face">📎👵</span>
+    </div>
+  </div>
+
+  <!-- Custom Windows 95 Modal (Replaces browser alert) -->
+  <div class="retro-modal-overlay" id="retro-modal-overlay">
+    <div class="retro-modal">
+      <div class="retro-modal-titlebar">
+        <span id="modal-title">SYSTEM MESSAGE</span>
+        <span class="titlebar-btn" onclick="closeRetroModal()">×</span>
+      </div>
+      <div class="retro-modal-body">
+        <div class="retro-modal-icon" id="modal-icon">⚠️</div>
+        <div id="modal-message" style="line-height:1.45;">System message content here.</div>
+      </div>
+      <div class="retro-modal-footer" id="modal-footer">
+        <button class="btn-retro" onclick="closeRetroModal()">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blue Screen of Death (BSOD) Overlay -->
+  <div class="bsod-overlay" id="bsod-overlay" onclick="dismissBsod()">
+    <div class="bsod-inner">
+      <div class="bsod-badge">Windows 95 — YOUR_MOM Fatal Exception</div>
+      <p>A fatal exception 0E has occurred at 0028:C0011E36 in VXD MOM_CHICKEN(01) + 00010E36.</p>
+      <p style="color:#ffff55;"><strong>*** STOP: 0x000000DEAD (ERROR_CHICKEN_STILL_FROZEN)</strong></p>
+      <p>
+        The current operation was terminated because Mom pulled into the driveway and you failed to defrost the chicken in the sink.<br>
+        Her car door just slammed shut. Your fate is sealed.
+      </p>
+      <p>
+        * Press any key or tap the screen to restart reality.<br>
+        * Press CTRL+ALT+DEL to try hiding in the closet.<br>
+        * If this is the first time you've seen this error, you will still get scolded.
+      </p>
+      <p class="bsod-blink">Press any key to continue _</p>
     </div>
   </div>
 
   <footer>
     <p>Built with 100% serious technology. Zero jokes. Maximum chaos.</p>
-    <p style="font-family:'VT323',monospace; font-size:1.3rem; color:#000080; letter-spacing:2px; text-shadow:2px 2px 0 #fff;">COOLNESS STATUS: PERMANENTLY BROKEN</p>
+    <p style="font-family:'VT323',monospace; font-size:1.4rem; color:var(--win-blue); letter-spacing:2px; text-shadow:2px 2px 0 #fff;">
+      COOLNESS STATUS: PERMANENTLY BROKEN
+    </p>
     <div class="counter">VISITORS: <span id="visitor-count">LOADING...</span></div>
-    <p style="font-size:0.75rem; color:#808080; margin-top:0.5rem;">Real-time global counter • No cookies • No tracking • Just chaos</p>
+    <p style="font-size:0.75rem; color:#404040; margin-top:0.5rem;">
+      Real-time global counter • Web Audio synth • 100% Tupperware certified
+    </p>
   </footer>
 
   <script>
-    // REAL GLOBAL VISITOR COUNTER — uses public APIs (no localStorage, every visit counts globally)
-    (function() {
-      const el = document.getElementById('visitor-count');
-      // Try multiple free counter APIs for reliability
-      const tryCounters = [
-        () => fetch('https://counterapi.dev/api/yourmom.cool/visits').then(r => r.json()).then(d => d.count),
-        () => fetch('https://api.countapi.xyz/get/yourmom.cool/visits').then(r => r.json()).then(d => d.value),
-        () => fetch('https://api.allorigins.win/raw?url=https://counterapi.dev/api/yourmom.cool/visits').then(r => r.json()).then(d => d.count)
-      ];
-      let idx = 0;
-      function attempt() {
-        tryCounters[idx]().then(count => {
-          if (el && typeof count === 'number') {
-            el.textContent = String(count).padStart(6, '0');
-          } else if (el) {
-            el.textContent = '000042';
+    /* ============================================================
+       AUDIO SYNTHESIZER (WEB AUDIO API)
+       100% in-browser, no external audio files needed!
+       ============================================================ */
+    let audioCtx = null;
+    let soundEnabled = true;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('btn-sound-toggle');
+      if (soundEnabled) {
+        btn.textContent = '🔊 SOUND: ON';
+        btn.classList.add('active');
+        playWinClick();
+      } else {
+        btn.textContent = '🔇 SOUND: OFF';
+        btn.classList.remove('active');
+      }
+    }
+
+    // Windows 95 Chord / Error Sound
+    function playWinError() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // Dissonant chord
+      [150, 155, 220].forEach(freq => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, now);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.45);
+      });
+    }
+
+    // Harsh Error Buzzer
+    function playBuzzer() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(80, now);
+      osc.frequency.setValueAtTime(75, now + 0.1);
+
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.3);
+    }
+
+    // Retro UI Click
+    function playWinClick() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.exponentialRampToValueAtTime(200, now + 0.04);
+
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.04);
+    }
+
+    // Boing spring sound
+    function playBoing() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(120, now);
+      osc.frequency.exponentialRampToValueAtTime(600, now + 0.2);
+      osc.frequency.exponentialRampToValueAtTime(220, now + 0.4);
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.45);
+    }
+
+    // Slipper Whoosh
+    function playSlipperWhoosh() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // Filtered noise swoosh
+      const bufferSize = ctx.sampleRate * 0.25;
+      const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+
+      const noise = ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(400, now);
+      filter.frequency.exponentialRampToValueAtTime(1600, now + 0.12);
+      filter.frequency.exponentialRampToValueAtTime(200, now + 0.25);
+      filter.Q.value = 3;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.01, now);
+      gain.gain.linearRampToValueAtTime(0.3, now + 0.1);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(ctx.destination);
+      noise.start(now);
+    }
+
+    // Dialup Handshake Synth
+    function playDialupHandshake() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      // Phone tone sequence
+      const freqs = [700, 1200, 950, 1400, 1800, 2100];
+      freqs.forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(f, now + i * 0.12);
+
+        gain.gain.setValueAtTime(0, now);
+        gain.gain.setValueAtTime(0.15, now + i * 0.12);
+        gain.gain.setValueAtTime(0, now + (i + 1) * 0.12);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.12);
+        osc.stop(now + (i + 1) * 0.12);
+      });
+    }
+
+    // Victory Arpeggio
+    function playVictoryChime() {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const notes = [261.63, 329.63, 392.00, 523.25, 659.25, 783.99, 1046.50];
+
+      notes.forEach((f, i) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(f, now + i * 0.08);
+
+        gain.gain.setValueAtTime(0.25, now + i * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.3);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + i * 0.08);
+        osc.stop(now + i * 0.08 + 0.3);
+      });
+    }
+
+    // Panic Siren
+    function triggerPanicSiren() {
+      triggerScreenShake();
+      if (!soundEnabled) {
+        showRetroModal('ALARM TRIGGERED', '🚨', 'CRITICAL MOM CONVERGENCE IN PROGRESS! PREPARE EXCUSES!');
+        return;
+      }
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+
+      for (let i = 0; i < 4; i++) {
+        osc.frequency.setValueAtTime(450, now + i * 0.4);
+        osc.frequency.linearRampToValueAtTime(900, now + i * 0.4 + 0.2);
+        osc.frequency.linearRampToValueAtTime(450, now + i * 0.4 + 0.4);
+      }
+
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.linearRampToValueAtTime(0.2, now + 1.5);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.6);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 1.6);
+
+      showRetroModal('CODE RED: MOM APPROACHING', '🚨', 'WARNING: Mom detected within a 2-block radius. Hallway light is currently ON. Panic level: CRITICAL.');
+    }
+
+    // Comedic Mom Catchphrase (uses speech synthesis + retro accompaniment)
+    function playMomPhrase(phrase) {
+      playWinClick();
+      playBoing();
+      if (!soundEnabled) return;
+
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(phrase);
+        utter.rate = 1.05;
+        utter.pitch = 1.35; // slightly higher mom pitch
+        window.speechSynthesis.speak(utter);
+      } else {
+        showRetroModal('MOM CATCHPHRASE', '📢', phrase);
+      }
+    }
+
+    /* ============================================================
+       FEATURE 2: DEFROST THE CHICKEN MINIGAME (PANIC.EXE)
+       ============================================================ */
+    let chickenDefrostPct = 0;
+    let chickenTimeLeft = 10.0;
+    let chickenTimerInterval = null;
+    let chickenGameActive = false;
+
+    function startChickenMinigame() {
+      getAudioContext();
+      chickenGameActive = true;
+      chickenDefrostPct = 0;
+      chickenTimeLeft = 10.0;
+
+      document.getElementById('btn-start-game').style.display = 'none';
+      document.getElementById('btn-mash-game').style.display = 'inline-block';
+      document.getElementById('btn-mash-game').focus();
+
+      updateChickenUI();
+      playBuzzer();
+
+      if (chickenTimerInterval) clearInterval(chickenTimerInterval);
+
+      chickenTimerInterval = setInterval(() => {
+        if (!chickenGameActive) return;
+        chickenTimeLeft = Math.max(0, chickenTimeLeft - 0.1);
+        document.getElementById('chicken-timer').textContent = chickenTimeLeft.toFixed(1) + 's';
+
+        // Gradually freeze back if player stops mashing
+        if (chickenDefrostPct > 0 && chickenDefrostPct < 100) {
+          chickenDefrostPct = Math.max(0, chickenDefrostPct - 0.25);
+          updateChickenUI();
+        }
+
+        if (chickenTimeLeft <= 0) {
+          clearInterval(chickenTimerInterval);
+          chickenGameActive = false;
+          if (chickenDefrostPct < 100) {
+            triggerBsod('ERROR_CHICKEN_STILL_FROZEN');
           }
-        }).catch(() => {
-          idx++;
-          if (idx < tryCounters.length) attempt();
-          else if (el) el.textContent = '000042';
+        }
+      }, 100);
+    }
+
+    function mashChickenDefrost() {
+      if (!chickenGameActive) return;
+      chickenDefrostPct = Math.min(100, chickenDefrostPct + 5.5);
+      playWinClick();
+      updateChickenUI();
+
+      // Screen nudge
+      const sprite = document.getElementById('chicken-sprite');
+      sprite.style.transform = `scale(${1 + chickenDefrostPct/200}) rotate(${(Math.random()-0.5)*15}deg)`;
+
+      if (chickenDefrostPct >= 100) {
+        clearInterval(chickenTimerInterval);
+        chickenGameActive = false;
+        playVictoryChime();
+        showRetroModal(
+          'MISSION ACCOMPLISHED',
+          '🍗',
+          'MIRACLE ACHIEVED! The chicken is fully defrosted in warm sink water just as mom walked through the front door! Coolness points temporarily increased by +0.01%!'
+        );
+        resetChickenMinigame();
+      }
+    }
+
+    function updateChickenUI() {
+      const fill = document.getElementById('defrost-bar');
+      const text = document.getElementById('defrost-text');
+      const sprite = document.getElementById('chicken-sprite');
+      const status = document.getElementById('chicken-status');
+
+      fill.style.width = chickenDefrostPct + '%';
+      text.textContent = `DEFROST PROGRESS: ${Math.floor(chickenDefrostPct)}%`;
+
+      if (chickenDefrostPct < 25) {
+        sprite.textContent = '🧊🍗🧊';
+        status.textContent = 'STATUS: SOLID FROZEN ROCK (-18°C)';
+        status.style.color = '#00e5ff';
+      } else if (chickenDefrostPct < 60) {
+        sprite.textContent = '💧🍗💧';
+        status.textContent = 'STATUS: RUNNING UNDER WARM SINK TAP (0°C)';
+        status.style.color = '#ffeb3b';
+      } else if (chickenDefrostPct < 90) {
+        sprite.textContent = '♨️🍗♨️';
+        status.textContent = 'STATUS: MICROWAVE DEFROST DEFCON 2 (14°C)';
+        status.style.color = '#ff9800';
+      } else {
+        sprite.textContent = '✨🍗✨';
+        status.textContent = 'STATUS: READY FOR THE SKILLET! CRISIS AVERTED!';
+        status.style.color = '#4caf50';
+      }
+    }
+
+    function resetChickenMinigame() {
+      clearInterval(chickenTimerInterval);
+      chickenGameActive = false;
+      chickenDefrostPct = 0;
+      chickenTimeLeft = 10.0;
+      document.getElementById('chicken-timer').textContent = '10.0s';
+      document.getElementById('btn-start-game').style.display = 'inline-block';
+      document.getElementById('btn-mash-game').style.display = 'none';
+      updateChickenUI();
+    }
+
+    // Spacebar listener for chicken mashing
+    window.addEventListener('keydown', (e) => {
+      if (e.code === 'Space' && chickenGameActive) {
+        e.preventDefault();
+        mashChickenDefrost();
+      }
+    });
+
+    /* ============================================================
+       FEATURE 3: MOMMYCLIPPY VIRTUAL ASSISTANT
+       ============================================================ */
+    const clippyAdvices = [
+      "It looks like you've been on the computer for 11 minutes. Would you like to put on a sweater before you catch pneumonia?",
+      "I noticed you haven't cleaned your room. Would you like me to threaten to donate all your clothes to charity?",
+      "It looks like you have a slight headache. WebMD says it is because you are always on that damn phone.",
+      "I see you didn't finish your vegetables from 2014. Should I keep them in Tupperware for another 10 years?",
+      "Did you know the neighbor's son just became a pediatric neurosurgeon at age 12? What have you done today?",
+      "It looks like you are playing an online video game. Let me vacuum right in front of the television.",
+      "I'm at the grocery store. Do you want the blue box or the red box? Hurry up, I'm at checkout already!",
+      "I noticed you left the hallway light on for 3 minutes. That is 4 cents wasted. We are not made of money!"
+    ];
+    let clippyIndex = 0;
+
+    function clippyNextAdvice() {
+      playWinClick();
+      clippyIndex = (clippyIndex + 1) % clippyAdvices.length;
+      document.getElementById('clippy-text').textContent = clippyAdvices[clippyIndex];
+    }
+
+    function clippyClicked() {
+      playBoing();
+      const bubble = document.getElementById('clippy-bubble');
+      bubble.style.display = 'block';
+      clippyNextAdvice();
+    }
+
+    function dismissClippy() {
+      playWinClick();
+      document.getElementById('clippy-bubble').style.display = 'none';
+    }
+
+    function clippyReply(choice) {
+      playWinClick();
+      document.getElementById('clippy-text').innerHTML = `<strong>Mom says:</strong> "Good. Now go take the chicken out of the freezer like I asked 4 hours ago."`;
+    }
+
+    // Periodic unsolicited advice cycle every 35s
+    setInterval(() => {
+      const bubble = document.getElementById('clippy-bubble');
+      if (bubble.style.display !== 'none') {
+        clippyIndex = (clippyIndex + 1) % clippyAdvices.length;
+        document.getElementById('clippy-text').textContent = clippyAdvices[clippyIndex];
+      }
+    }, 35000);
+
+    /* ============================================================
+       FEATURE 4: MOM_MESSENGER.BAT RETRO CHAT
+       ============================================================ */
+    const momReplies = [
+      "Don't you use that tone with me in capital letters!",
+      "I don't care if it's online, press the pause button right now.",
+      "We HAVE food at home. There is half an onion and ice cubes in the freezer.",
+      "Call your grandmother right now, she had a dream you were sneezing.",
+      "Turn off the Nintendo, it is frying your brain cells.",
+      "Why is there an empty milk jug back in the fridge?! Explain yourself.",
+      "YOUR AUNT MARTHA SAYS HELLO (I DON'T KNOW HOW TO TURN OFF CAPS LOCK)"
+    ];
+
+    function sendChatMessage(text) {
+      playWinClick();
+      const chatBox = document.getElementById('chat-box');
+
+      // Append user message
+      const userMsg = document.createElement('div');
+      userMsg.className = 'chat-msg msg-you';
+      userMsg.innerHTML = `<div class="msg-meta"><span>You</span><span>Just now</span></div>${text}`;
+      chatBox.appendChild(userMsg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+
+      // Simulated Mom response with typing delay
+      setTimeout(() => {
+        playDialupHandshake();
+        const randomMomReply = momReplies[Math.floor(Math.random() * momReplies.length)];
+        const momMsg = document.createElement('div');
+        momMsg.className = 'chat-msg msg-mom';
+        momMsg.innerHTML = `<div class="msg-meta"><span>Mom</span><span>Just now</span></div>${randomMomReply}`;
+        chatBox.appendChild(momMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1000);
+    }
+
+    function playVoiceNoteDemo() {
+      playMomPhrase("Hello? Is this thing recording? Harold, how do I send a voice note on the WhatsApp? Can you hear me?");
+    }
+
+    /* ============================================================
+       FEATURE 5: BIOMETRIC MOM SCANNER (SCANNER.EXE)
+       ============================================================ */
+    function initiateBiometricScan() {
+      playDialupHandshake();
+      const bar = document.getElementById('scanner-progress');
+      const fill = document.getElementById('scanner-fill');
+      const results = document.getElementById('scanner-results');
+
+      bar.style.display = 'block';
+      results.style.display = 'none';
+      fill.style.width = '0%';
+
+      let progress = 0;
+      const interval = setInterval(() => {
+        progress += 10;
+        fill.style.width = progress + '%';
+        if (progress >= 100) {
+          clearInterval(interval);
+          playBuzzer();
+          renderScannerResults();
+        }
+      }, 120);
+    }
+
+    function renderScannerResults() {
+      const name = document.getElementById('scanner-input').value || 'Target Mom';
+      const results = document.getElementById('scanner-results');
+
+      const tupperwarePct = (88 + Math.random() * 11).toFixed(1);
+      const bagCount = Math.floor(3400 + Math.random() * 2500);
+
+      results.innerHTML = `
+        <div style="border-bottom:1px solid #00aa44; padding-bottom:4px; margin-bottom:8px; font-weight:bold;">
+          SCAN RESULTS FOR: <span class="scan-highlight">${name.toUpperCase()}</span>
+        </div>
+        <div>▸ Tupperware Lid Mismatch Rate: <span class="scan-crit">${tupperwarePct}% (CRITICAL ANOMALY)</span></div>
+        <div>▸ Minion Meme Exposure Level: <span class="scan-crit">LETHAL DOSE (Daily Facebook shares detected)</span></div>
+        <div>▸ Thermostat Sensitivity: <span class="scan-warn">Triggers alarm if adjusted by ±0.5°F</span></div>
+        <div>▸ Plastic Bags Inside Another Plastic Bag: <span class="scan-highlight">${bagCount} units</span></div>
+        <div>▸ "We Have Food At Home" Frequency: <span class="scan-crit">99.8% of requests</span></div>
+        <div>▸ Threat Level: <span class="scan-crit">WOODEN SPOON CURRENTLY ARMED & READY</span></div>
+        <div style="margin-top:8px; border-top:1px dashed #00aa44; padding-top:6px; color:#fff;">
+          <strong>FINAL DIAGNOSIS:</strong> Scientifically certified uncool. Do not argue.
+        </div>
+      `;
+      results.style.display = 'block';
+    }
+
+    /* ============================================================
+       FEATURE 6: VISUAL GAGS (CRT GLITCH, SCREEN SHAKE, SLIPPERS)
+       ============================================================ */
+    function triggerScreenShake() {
+      const win = document.getElementById('main-window');
+      win.classList.remove('screen-shaking');
+      void win.offsetWidth; // trigger reflow
+      win.classList.add('screen-shaking');
+      setTimeout(() => win.classList.remove('screen-shaking'), 600);
+    }
+
+    function toggleGlitch() {
+      document.body.classList.toggle('crt-glitching');
+      playDialupHandshake();
+    }
+
+    function handleMeterClick() {
+      playWinError();
+      triggerScreenShake();
+      toggleGlitch();
+      setTimeout(toggleGlitch, 1500);
+      showRetroModal('SYSTEM OVERLOAD', '⚡', 'VOLTAGE SURGE DETECTED! Coolness circuit completely melted! Zero coolness recovered!');
+    }
+
+    // Flying Slipper & Wooden Spoon Cursor Trail Canvas
+    let slipperTrailActive = true;
+    const canvas = document.getElementById('slipper-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function toggleSlipperTrail() {
+      slipperTrailActive = !slipperTrailActive;
+      const btn = document.getElementById('btn-slipper-toggle');
+      if (slipperTrailActive) {
+        btn.textContent = '🩴 SLIPPER TRAIL: ON';
+        btn.classList.add('active');
+        playWinClick();
+      } else {
+        btn.textContent = '🩴 SLIPPER TRAIL: OFF';
+        btn.classList.remove('active');
+        particles = [];
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    const slipperIcons = ['🩴', '🥄', '🧊', '📦', '👵'];
+
+    window.addEventListener('mousemove', (e) => {
+      if (!slipperTrailActive) return;
+      if (Math.random() < 0.28) {
+        particles.push({
+          x: e.clientX,
+          y: e.clientY,
+          vx: (Math.random() - 0.5) * 4,
+          vy: Math.random() * -3 - 1,
+          rot: Math.random() * Math.PI * 2,
+          vrot: (Math.random() - 0.5) * 0.2,
+          char: slipperIcons[Math.floor(Math.random() * slipperIcons.length)],
+          alpha: 1.0,
+          scale: 18 + Math.random() * 12
         });
       }
-      attempt();
+    });
+
+    function renderParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (slipperTrailActive && particles.length > 0) {
+        for (let i = particles.length - 1; i >= 0; i--) {
+          const p = particles[i];
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.15; // gravity
+          p.rot += p.vrot;
+          p.alpha -= 0.025;
+
+          if (p.alpha <= 0) {
+            particles.splice(i, 1);
+            continue;
+          }
+
+          ctx.save();
+          ctx.globalAlpha = p.alpha;
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.font = `${p.scale}px sans-serif`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(p.char, 0, 0);
+          ctx.restore();
+        }
+      }
+      requestAnimationFrame(renderParticles);
+    }
+    renderParticles();
+
+    /* ============================================================
+       MODAL & BSOD CONTROLLERS
+       ============================================================ */
+    function showRetroModal(title, icon, message) {
+      playWinError();
+      document.getElementById('modal-title').textContent = title || 'SYSTEM NOTICE';
+      document.getElementById('modal-icon').textContent = icon || '⚠️';
+      document.getElementById('modal-message').innerHTML = message;
+      document.getElementById('retro-modal-overlay').style.display = 'flex';
+    }
+
+    function closeRetroModal() {
+      playWinClick();
+      document.getElementById('retro-modal-overlay').style.display = 'none';
+    }
+
+    function triggerBsod(reason) {
+      playWinError();
+      const overlay = document.getElementById('bsod-overlay');
+      overlay.style.display = 'flex';
+    }
+
+    function triggerBsodManual() {
+      triggerBsod('MANUAL_CRASH_TEST');
+    }
+
+    function dismissBsod() {
+      playWinClick();
+      document.getElementById('bsod-overlay').style.display = 'none';
+    }
+
+    window.addEventListener('keydown', () => {
+      const bsod = document.getElementById('bsod-overlay');
+      if (bsod.style.display === 'flex') {
+        dismissBsod();
+      }
+    });
+
+    function handleWindowCloseAttempt() {
+      playWinError();
+      triggerScreenShake();
+      showRetroModal(
+        'ACCESS DENIED',
+        '🛑',
+        'CRITICAL PERMISSION ERROR:<br><br>You cannot close reality. Your mom will remain uncool even if you shut down Windows 95.'
+      );
+    }
+
+    function showCoolStatusAlert() {
+      playWinError();
+      showRetroModal(
+        'IBNCM AUDIT REPORT',
+        '📋',
+        'The International Board of Not-Cool Moms conducted a 400-hour forensic audit of your mom.<br><br>' +
+        '<strong>Findings:</strong><br>' +
+        '• 0 Cool Points awarded.<br>' +
+        '• Still tells servers "You too!" when they say "Enjoy your meal".<br>' +
+        '• Verdict is permanently binding.'
+      );
+    }
+
+    function callGrandma() {
+      playVictoryChime();
+      showRetroModal(
+        'CONNECTING TO GRANDMA...',
+        '👵',
+        'Grandma picked up the rotary phone:<br><br><em>"Oh honey! Are you eating enough? Why are you so skinny? Here, take $20 and do not tell your mother."</em>'
+      );
+    }
+
+    function generateRetroInsultModal() {
+      const insults = [
+        "Your mom is so unfunny, her jokes need laugh tracks in real life.",
+        "Your mom is so slow, she makes dial-up internet look like fiber optic.",
+        "Your mom's dance moves are so bad, the floor filed a formal complaint.",
+        "Your mom's fashion sense is so broken, mirrors refuse to reflect her.",
+        "Your mom is so literal, she brought a step-ladder to a low bar.",
+        "Your mom's cooking is so bad, the smoke detector cheers her on.",
+        "Your mom is so bad at technology, she tried to charge her electric toothbrush with a toaster.",
+        "Your mom's singing is so tragic, the neighborhood dogs formed a support group."
+      ];
+      const pick = insults[Math.floor(Math.random() * insults.length)];
+      showRetroModal('FRESH ROAST GENERATED', '🎲', pick);
+    }
+
+    function randomizeMomAvatar() {
+      playBoing();
+      const seeds = ['CoolMomFail', 'VintageMom95', 'TupperwareQueen', 'FoodAtHome', 'Karen1995', 'SuperSlipper'];
+      const pick = seeds[Math.floor(Math.random() * seeds.length)] + Math.floor(Math.random() * 100);
+      document.getElementById('mom-avatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${pick}`;
+    }
+
+    function scrollToSection(id) {
+      playWinClick();
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ============================================================
+       APIs: VISITOR COUNTER & JOKES (Original working mechanics preserved)
+       ============================================================ */
+    (function() {
+      const el = document.getElementById('visitor-count');
+      if (!el) return;
+
+      // Local storage fallback baseline
+      let count = 133742;
+      try {
+        const stored = localStorage.getItem('ibncm_visits');
+        if (stored) {
+          count = parseInt(stored, 10) + 1;
+        } else {
+          count = Math.floor(100000 + Math.random() * 50000);
+        }
+        localStorage.setItem('ibncm_visits', count);
+      } catch (e) {}
+
+      el.textContent = String(count).padStart(6, '0');
+
+      // Attempt live public counter silently if reachable
+      try {
+        fetch('https://counterapi.dev/api/yourmom.cool/visits')
+          .then(r => r.ok ? r.json() : null)
+          .then(d => {
+            if (d && typeof d.count === 'number') {
+              el.textContent = String(d.count).padStart(6, '0');
+            }
+          })
+          .catch(() => {});
+      } catch(e) {}
     })();
 
-    // Funny quote from a REAL FREE API (icanhazdadjoke / official-joke-api)
     (function() {
       const el = document.getElementById('funny-quote');
-      // Try official joke API first
       fetch('https://official-joke-api.appspot.com/random_joke')
         .then(r => r.json())
         .then(j => {
@@ -680,7 +2256,6 @@
           }
         })
         .catch(() => {
-          // Fallback to dad jokes
           fetch('https://icanhazdadjoke.com/', { headers: { Accept: 'application/json' } })
             .then(r => r.json())
             .then(j => {
@@ -700,21 +2275,6 @@
             });
         });
     })();
-
-    // Generate new insult (funny API-style interaction)
-    function generateInsult() {
-      const insults = [
-        "Your mom is so unfunny, her jokes need laugh tracks in real life.",
-        "Your mom is so slow, she makes dial-up look like fiber optic.",
-        "Your mom's dance moves are so bad, the floor filed a complaint.",
-        "Your mom's fashion sense is so broken, mirrors refuse to reflect her.",
-        "Your mom is so literal, she brought a ladder to a low bar.",
-        "Your mom's cooking is so bad, the smoke detector sends thank-you notes.",
-        "Your mom's singing is so bad, autotune filed for unemployment.",
-        "Your mom is so bad at directions, GPS asks HER for help."
-      ];
-      alert('New insult generated:\n\n' + insults[Math.floor(Math.random() * insults.length)]);
-    }
   </script>
 </body>
 </html>
