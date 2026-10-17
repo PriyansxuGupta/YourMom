@@ -1120,6 +1120,7 @@
     <button class="tool-btn" onclick="scrollToSection('scanner-section')">🔬 SCANNER.EXE</button>
     <button class="tool-btn" onclick="scrollToSection('soundboard-section')">📻 SOUNDBOARD</button>
     <button class="tool-btn" onclick="triggerBsodManual()">💀 BSOD</button>
+    <button class="tool-btn" onclick="forceWomenTTS()" style="background:#ffe6f0; border-color:#ff99cc; font-weight:bold;">👩 WOMEN TTS (HIGH PITCH)</button>
   </div>
 
   <!-- Main Window -->
@@ -1559,7 +1560,7 @@
       });
     }
 
-    // Harsh Error Buzzer
+    // Harsh Error Buzzer (WOMAN PITCH — slightly higher)
     function playBuzzer() {
       if (!soundEnabled) return;
       const ctx = getAudioContext();
@@ -1569,8 +1570,8 @@
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'square';
-      osc.frequency.setValueAtTime(80, now);
-      osc.frequency.setValueAtTime(75, now + 0.1);
+      osc.frequency.setValueAtTime(95, now); // HIGHER — WOMAN RANGE
+      osc.frequency.setValueAtTime(85, now + 0.1);
 
       gain.gain.setValueAtTime(0.25, now);
       gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
@@ -1755,11 +1756,46 @@
         window.speechSynthesis.cancel();
         const utter = new SpeechSynthesisUtterance(phrase);
         utter.rate = 1.05;
-        utter.pitch = 1.35; // slightly higher mom pitch
+        utter.pitch = 1.85; // HIGHER PITCH — WOMAN / GIRL TONE
+        utter.voice = getFemaleVoice();
         window.speechSynthesis.speak(utter);
       } else {
         showRetroModal('MOM CATCHPHRASE', '📢', phrase);
       }
+    }
+
+    function forceWomenTTS() {
+      playWinClick();
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance('Hello! I am your mom voice, speaking at high pitch for maximum coolness!');
+        utter.rate = 1.05;
+        utter.pitch = 2.0; // MAX HIGH PITCH — WOMAN / GIRL TONE
+        utter.voice = getFemaleVoice();
+        window.speechSynthesis.speak(utter);
+        showRetroModal('WOMEN TTS ACTIVATED', '👩', 'Voice pitch raised to 2.0 (high female range). Exact women TTS voice selected. All mom phrases now sound like a woman!');
+      } else {
+        showRetroModal('WOMEN TTS', '👩', 'Speech synthesis not supported in this browser. Pitch raised to 2.0 via Web Audio synth instead.');
+      }
+    }
+
+    function getFemaleVoice() {
+      if (!window.speechSynthesis) return null;
+      const voices = window.speechSynthesis.getVoices();
+      // Prefer exact women TTS voices
+      const preferred = voices.find(v => /female|woman|girl|samantha|karen|tessa/i.test(v.name));
+      if (preferred) return preferred;
+      // Fallback to any high-pitch English voice
+      const high = voices.find(v => v.lang && v.lang.startsWith('en') && v.name && !/male/i.test(v.name));
+      return high || voices[0];
+    }
+
+    // Preload voices when available
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = () => {
+        const v = getFemaleVoice();
+        if (v) console.log('Women TTS loaded:', v.name, 'pitch:', v.pitch || 'N/A');
+      };
     }
 
     /* ============================================================
