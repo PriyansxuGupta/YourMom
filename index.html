@@ -505,6 +505,7 @@
       50% { transform: translateY(-4px); }
     }
     .dialog-box p { margin: 0; font-size: 0.92rem; }
+    .dialog-box { cursor: pointer; user-select: none; }
 
     /* Retro Buttons */
     .btn-retro {
@@ -1392,32 +1393,32 @@
         <span>⚠ SYSTEM ALERTS & ROASTS ⚠</span>
       </div>
 
-      <div class="dialog-box">
+      <div class="dialog-box" onclick="playDialogSound(this); playWinClick(); triggerScreenShake();">
         <div class="dialog-icon">❌</div>
         <p><strong>Error 404:</strong> Your mom is so bad at technology, she thought Bluetooth was a rare dental condition.</p>
       </div>
 
-      <div class="dialog-box">
+      <div class="dialog-box" onclick="playDialogSound(this); playWinClick(); triggerScreenShake();">
         <div class="dialog-icon">⚠️</div>
         <p><strong>Warning:</strong> Your mom is so old, her first job was as a babysitter for dinosaurs.</p>
       </div>
 
-      <div class="dialog-box">
+      <div class="dialog-box" onclick="playDialogSound(this); playWinClick(); triggerScreenShake();">
         <div class="dialog-icon">💀</div>
         <p><strong>Critical:</strong> Your mom is so disorganized, she got lost in a one-room apartment.</p>
       </div>
 
-      <div class="dialog-box">
+      <div class="dialog-box" onclick="playDialogSound(this); playWinClick(); triggerScreenShake();">
         <div class="dialog-icon">🔴</div>
         <p><strong>Fatal:</strong> Your mom is so literal, when told to "go with the flow" she jumped into a river.</p>
       </div>
 
-      <div class="dialog-box">
+      <div class="dialog-box" onclick="playDialogSound(this); playWinClick(); triggerScreenShake();">
         <div class="dialog-icon">📉</div>
         <p><strong>Analytics:</strong> Your mom's coolness graph is a flatline. Even the X-axis is embarrassed.</p>
       </div>
 
-      <div class="dialog-box">
+      <div class="dialog-box" onclick="playDialogSound(this); playWinClick(); triggerScreenShake();">
         <div class="dialog-icon">🎤</div>
         <p><strong>Mic Drop:</strong> Your mom's jokes are so bad, the microphone walked off stage.</p>
       </div>
@@ -1557,6 +1558,32 @@
         osc.start(now);
         osc.stop(now + 0.45);
       });
+    }
+
+    function playDialogSound(el) {
+      if (!soundEnabled) return;
+      const ctx = getAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      // Different tone per severity based on icon/text
+      const icon = el.querySelector('.dialog-icon').textContent;
+      let freq = 440;
+      if (icon.includes('❌') || icon.includes('💀') || icon.includes('🔴')) freq = 220;
+      else if (icon.includes('⚠️')) freq = 330;
+      else if (icon.includes('📉')) freq = 880;
+      else if (icon.includes('🎤')) freq = 660;
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.5, now + 0.08);
+      gain.gain.setValueAtTime(0.15, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.15);
     }
 
     // Harsh Error Buzzer (WOMAN PITCH — slightly higher)
