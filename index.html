@@ -1105,7 +1105,24 @@
       .soundboard-grid { grid-template-columns: 1fr 1fr; }
       .clippy-bubble { max-width: 220px; font-size: 0.82rem; }
     }
-  </style>
+     /* Mom Mood Calibrator */
+    .mood-calibrator {
+      background: #fff8d6;
+      border: 3px solid #000;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      box-shadow: 6px 6px 0 #806b00;
+    }
+    .mood-calibrator h3 { margin: 0 0 0.25rem; font-family: 'VT323', monospace; font-size: 1.6rem; color: var(--win-blue); }
+    .mood-calibrator p { margin: 0 0 0.8rem; font-size: 0.88rem; }
+    .mood-controls { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+    .mood-slider { flex: 1 1 220px; accent-color: #8b0000; cursor: pointer; }
+    .mood-readout { min-width: 190px; padding: 0.55rem; background: #000; color: #0f0; font-family: 'VT323', monospace; font-size: 1.15rem; text-align: center; border: 2px inset #808080; }
+    .mood-stamp { display: inline-block; margin-top: 0.8rem; padding: 0.35rem 0.65rem; border: 2px dashed #8b0000; color: #8b0000; font-weight: 900; transform: rotate(-2deg); }
+    .mood-calibrator.is-chaotic { animation: calibrator-wiggle 0.22s linear infinite; }
+    @keyframes calibrator-wiggle { 0%,100% { transform: rotate(0); } 50% { transform: rotate(0.7deg); } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; } }
+ </style>
 </head>
 <body>
   <div class="bg-tile"></div>
@@ -1386,6 +1403,17 @@
         <div class="scanner-results" id="scanner-results">
           <!-- Populated by JS -->
         </div>
+      </div>
+
+      <!-- Interactive mood calibrator -->
+      <div class="mood-calibrator" id="mood-calibrator">
+        <h3>🧪 MOM MOOD CALIBRATOR 3000</h3>
+        <p>Drag the dial to predict what happens when you say, “There&apos;s nothing to eat.”</p>
+        <div class="mood-controls">
+          <input class="mood-slider" id="mood-slider" type="range" min="0" max="100" value="42" aria-label="Mom mood intensity">
+          <output class="mood-readout" id="mood-readout" for="mood-slider">42% — suspicious</output>
+        </div>
+        <div class="mood-stamp" id="mood-stamp">VERDICT: HIDE THE SNACKS</div>
       </div>
 
       <!-- System Alerts -->
@@ -2273,6 +2301,33 @@
       const el = document.getElementById(id);
       if (el) el.scrollIntoView({ behavior: 'smooth' });
     }
+
+    /* ============================================================
+       FEATURE 7: MOM MOOD CALIBRATOR
+       ============================================================ */
+    const moodSlider = document.getElementById('mood-slider');
+    const moodReadout = document.getElementById('mood-readout');
+    const moodStamp = document.getElementById('mood-stamp');
+    const moodCalibrator = document.getElementById('mood-calibrator');
+    const moodStates = [
+      [20, '20% — suspicious', 'VERDICT: ASK NICELY'],
+      [40, '40% — suspicious', 'VERDICT: HIDE THE SNACKS'],
+      [60, '60% — clipboard acquired', 'VERDICT: PRETEND TO BE BUSY'],
+      [80, '80% — full volume', 'VERDICT: DEPLOY GRANDMA'],
+      [101, '100% — wooden spoon protocol', 'VERDICT: RUN.']
+    ];
+
+    function updateMomMood() {
+      const mood = Number(moodSlider.value);
+      const state = moodStates.find(([threshold]) => mood < threshold) || moodStates[moodStates.length - 1];
+      moodReadout.textContent = state[1];
+      moodStamp.textContent = state[2];
+      moodCalibrator.classList.toggle('is-chaotic', mood >= 80);
+      if (mood >= 80) playBuzzer();
+    }
+
+    moodSlider.addEventListener('input', updateMomMood);
+    moodSlider.addEventListener('change', () => { playWinClick(); updateMomMood(); });
 
     /* ============================================================
        APIs: VISITOR COUNTER & JOKES (Original working mechanics preserved)
