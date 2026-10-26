@@ -1423,36 +1423,6 @@
         <p><strong>Mic Drop:</strong> Your mom's jokes are so bad, the microphone walked off stage.</p>
       </div>
 
-      <!-- ============================================================
-           NEW GAME: MOM COOLNESS CLICKER (COOL.EXE)
-           ============================================================ -->
-      <div class="section-head" id="clicker-section">
-        <span>🎮 MOM COOLNESS CLICKER (COOL.EXE)</span>
-        <small style="font-size:0.9rem; color:#8b0000; font-weight:bold;">Rapid Click Game</small>
-      </div>
-      <div class="minigame-box" style="background:#1a0033; border-color:#ff55aa; box-shadow:0 0 15px rgba(255,85,170,0.35);">
-        <div class="minigame-header" style="border-bottom-color:#ff55aa;">
-          <span class="minigame-title" style="color:#ff55aa; text-shadow:0 0 6px #ff55aa;">💅 TRY TO MAKE MOM COOL 💅</span>
-          <span class="minigame-timer" id="clicker-timer">10.0s</span>
-        </div>
-        <p style="margin:0 0 0.8rem; font-size:0.92rem; color:#e0e0e0;">
-          <strong>OBJECTIVE:</strong> Click the button as fast as you can to inject coolness into Mom's system before the timer runs out!
-        </p>
-        <div style="text-align:center; margin:1rem 0;">
-          <div style="font-size:5rem; display:inline-block; transition:transform 0.1s;" id="clicker-icon">👵</div>
-          <div style="font-family:'VT323',monospace; font-size:1.6rem; color:#ff55aa; margin-top:8px;" id="clicker-score">COOLNESS: 0</div>
-        </div>
-        <div style="width:100%; height:28px; background:#222; border:2px solid #fff; position:relative; overflow:hidden; margin-bottom:1rem;">
-          <div id="clicker-fill" style="width:0%; height:100%; background:linear-gradient(90deg,#ff55aa,#ff8800,#ffee00); transition:width 0.05s;"></div>
-          <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-family:'VT323',monospace; font-size:1.1rem; color:#fff; text-shadow:0 0 4px #000; pointer-events:none;">COOLNESS METER</div>
-        </div>
-        <div class="minigame-controls" style="justify-content:center;">
-          <button class="btn-mash" id="btn-clicker-start" onclick="startCoolnessClicker()" style="background:#ff55aa; border-color:#ff88cc; box-shadow:0 4px 0 #aa0033;">▶ START COOL ATTACK</button>
-          <button class="btn-mash" id="btn-clicker-click" onclick="clickCoolness()" style="display:none; background:#ff8800; border-color:#ffaa55; box-shadow:0 4px 0 #aa3300;">💥 CLICK FOR COOL 💥</button>
-          <button class="tool-btn" onclick="resetCoolnessClicker()" style="background:#333; color:#fff;">RESET</button>
-        </div>
-      </div>
-
       <div style="margin-top:1.5rem; display:flex; flex-wrap:wrap; gap:10px;">
         <button class="btn-retro" onclick="generateRetroInsultModal()">🎲 GENERATE NEW ROAST 🎲</button>
         <button class="btn-retro btn-retro-danger" onclick="triggerPanicSiren()">🚨 SOUND THE ALARM 🚨</button>
@@ -1965,76 +1935,6 @@
       if (e.code === 'Space' && chickenGameActive) {
         e.preventDefault();
         mashChickenDefrost();
-      }
-    });
-
-    /* ============================================================
-       NEW GAME: MOM COOLNESS CLICKER (COOL.EXE)
-       ============================================================ */
-    let clickerScore = 0;
-    let clickerTimeLeft = 10.0;
-    let clickerInterval = null;
-    let clickerActive = false;
-
-    function startCoolnessClicker() {
-      clickerActive = true;
-      clickerScore = 0;
-      clickerTimeLeft = 10.0;
-      document.getElementById('btn-clicker-start').style.display = 'none';
-      document.getElementById('btn-clicker-click').style.display = 'inline-block';
-      document.getElementById('btn-clicker-click').focus();
-      updateClickerUI();
-      playBuzzer();
-      if (clickerInterval) clearInterval(clickerInterval);
-      clickerInterval = setInterval(() => {
-        if (!clickerActive) return;
-        clickerTimeLeft = Math.max(0, clickerTimeLeft - 0.1);
-        document.getElementById('clicker-timer').textContent = clickerTimeLeft.toFixed(1) + 's';
-        if (clickerTimeLeft <= 0) {
-          clearInterval(clickerInterval);
-          clickerActive = false;
-          if (clickerScore < 50) {
-            showRetroModal('COOL ATTACK FAILED', '💅', 'Your mom is still uncool. Score: ' + clickerScore + '. Try clicking faster next time!');
-          } else {
-            playVictoryChime();
-            showRetroModal('COOL ATTACK SUCCESS!', '💅', 'Amazing! You injected ' + clickerScore + ' coolness points! Your mom is now 0.001% cooler!');
-          }
-        }
-      }, 100);
-    }
-
-    function clickCoolness() {
-      if (!clickerActive) return;
-      clickerScore += 1;
-      playWinClick();
-      const icon = document.getElementById('clicker-icon');
-      icon.style.transform = 'scale(1.2) rotate(' + (Math.random()-0.5)*20 + 'deg)';
-      setTimeout(() => { icon.style.transform = 'scale(1) rotate(0deg)'; }, 100);
-      updateClickerUI();
-    }
-
-    function updateClickerUI() {
-      document.getElementById('clicker-score').textContent = 'COOLNESS: ' + clickerScore;
-      document.getElementById('clicker-fill').style.width = Math.min(100, (clickerScore / 60) * 100) + '%';
-    }
-
-    function resetCoolnessClicker() {
-      clearInterval(clickerInterval);
-      clickerActive = false;
-      clickerScore = 0;
-      clickerTimeLeft = 10.0;
-      document.getElementById('btn-clicker-start').style.display = 'inline-block';
-      document.getElementById('btn-clicker-click').style.display = 'none';
-      document.getElementById('clicker-timer').textContent = '10.0s';
-      document.getElementById('clicker-score').textContent = 'COOLNESS: 0';
-      document.getElementById('clicker-fill').style.width = '0%';
-      document.getElementById('clicker-icon').style.transform = 'scale(1) rotate(0deg)';
-    }
-
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && clickerActive) {
-        e.preventDefault();
-        clickCoolness();
       }
     });
 
